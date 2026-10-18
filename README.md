@@ -21,7 +21,7 @@ In your mod's agent package (or directly in the mod repo's `apm.yml`):
 ```yaml
 dependencies:
   apm:
-    - JoeFwd/bannerlord-agent#v0.1.0
+    - JoeFwd/bannerlord-agent#v0.1.1
 ```
 
 MCP servers are declared by the consuming project, which owns the ports. Example:
