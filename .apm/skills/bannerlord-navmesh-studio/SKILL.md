@@ -10,7 +10,7 @@ description: >
 
 # Bannerlord Navmesh Studio
 
-The studio is a private Git repository (https://github.com/JoeFwd/BannerlordSceneStudio). Its path is
+The studio is a Git repository (https://github.com/JoeFwd/BannerlordSceneStudio). Its path is
 `$env:BANNERLORD_NAVMESH_STUDIO`. If the variable is unset, use the bannerlord-agent checkout's
 `tools/BannerlordSceneStudio` submodule. If that is missing too, ask the user. Never guess a path.
 

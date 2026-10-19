@@ -97,7 +97,7 @@ The tool source is checked out as git submodules under `tools/`:
 | Path | Repository |
 |---|---|
 | `tools/BannerlordCraftingTool.CLI` | https://github.com/JoeFwd/BannerlordCraftingTool.CLI |
-| `tools/BannerlordSceneStudio` | https://github.com/JoeFwd/BannerlordSceneStudio (private) |
+| `tools/BannerlordSceneStudio` | https://github.com/JoeFwd/BannerlordSceneStudio |
 
 Run `git submodule update --init --recursive` in an editing checkout to fetch them. Build the
 CLI with `dotnet build tools/BannerlordCraftingTool.CLI/BannerlordCraftingTool.Cli -c Release`.
