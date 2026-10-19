@@ -5,10 +5,12 @@ type: howto
 topic: scenes-xscene
 tags: [scenes, tool, composer]
 sources: [docs/scene-composer-design.md, blscene/compose.py]
-updated: 2026-10-18
+updated: 2026-10-19
 ---
 
 # Scene composer (blscene)
+
+The composer, corpus harvesting and the ZGR6 terrain writer were removed from the studio's `develop` branch. They live on its `scene-generation` branch; check that branch out to use this API.
 
 `SceneBuilder`: new_battle, from_scene, regenerate_terrain(keep_navmesh), add, copy_entities, add_flora, build. Outputs: scene.xscene, terrain.bin, flora.bin, atmosphere.xml, references.txt, navmesh.bin plus provenance.json/.md.
 

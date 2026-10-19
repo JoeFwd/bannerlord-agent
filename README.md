@@ -4,6 +4,36 @@ A generic [APM](https://github.com/microsoft/apm) package for AI-assisted
 Mount & Blade II: Bannerlord modding with Claude Code or Codex. It is mod-neutral.
 A mod adds its own context in a separate package that depends on this one.
 
+## Quick start
+
+APM (Agent Package Manager) installs agent packages the way npm installs libraries. It copies
+each package's skills, agents, hooks and instructions into your project's `.claude/` and
+`.codex/` folders, and writes `.mcp.json` from the `mcp:` list in `apm.yml`.
+
+```powershell
+irm https://aka.ms/apm-windows | iex   # install APM once (macOS/Linux: see the APM README)
+apm install                             # in the repo with apm.yml: fetch packages, deploy them
+apm update --yes                        # after bumping a dependency tag in apm.yml
+```
+
+See [Install](#install) for the `apm.yml` lines that add this package.
+
+## What it installs on your machine
+
+| When | What | Where |
+|---|---|---|
+| `apm install` | This package and its dependencies, pinned to the tags in `apm.lock.yaml` | `apm_modules/`, `.claude/`, `.codex/` and `.mcp.json` in your project |
+| Each session start (hook) | `BannerlordSearch.Mcp.Server` 0.2.0, a global .NET tool | `~/.dotnet/tools` |
+| | `BannerlordSearch.Source`, one NuGet package per `bannerlord-search-<version>` server in `.mcp.json` (the game's source, for code search) | `~/.nuget/packages/bannerlordsearch.source/<version>` |
+| | `JetBrainsDebuggerPauseMonitor` 1.0.0, a global .NET tool, plus an `nlog.config` next to it if the package lacks one | `~/.dotnet/tools` |
+| | Background processes: one search server per version (ports 5000+), the pause monitor (7777) and GABS (8080). If port 8080 is not answering, any running `gabs` process is stopped and restarted | logs in `%TEMP%` |
+| First use of `bannerlord-crafting-offsets` or the navmesh skills | A `git clone` of the tool at the commit pinned in `tools.lock.json`, skipped if `BANNERLORD_*` or the `tools/` submodule already provides it. The skill then builds it (`dotnet build`) or installs it (`pip install -e`) | `~/.bannerlord-agent/tools/<name>` |
+| Sprite skills | `pip install Pillow` | your Python environment |
+
+Nothing else is downloaded. Every version above is pinned by the package release, so upgrading
+the package is the only thing that changes them. An existing tool clone is never updated in
+place; the skill reports a commit mismatch instead.
+
 ## Contents
 
 | Path | What it is |
@@ -45,7 +75,7 @@ In your mod's agent package (or directly in the mod repo's `apm.yml`):
 ```yaml
 dependencies:
   apm:
-    - JoeFwd/bannerlord-agent#v0.1.3
+    - JoeFwd/bannerlord-agent#v0.1.4
 ```
 
 MCP servers are declared by the consuming project, which owns the ports. Example:
@@ -87,8 +117,8 @@ starts one BannerlordSearch server per version, on port 5000 and up.
 |---|---|
 | `GABS_EXE` | The `gabs.exe` path. If unset, `gabs` must be on PATH |
 | `ASSERT_AUTO_IGNORE_EXE` | Optional. The AssertAutoIgnore popup dismisser |
-| `BANNERLORD_CRAFTING_TOOL` | The BannerlordCraftingTool CLI checkout, for `bannerlord-crafting-offsets`. Defaults to `tools/BannerlordCraftingTool.CLI` |
-| `BANNERLORD_NAVMESH_STUDIO` | The Bannerlord Scene Studio checkout, for the navmesh skills. Defaults to `tools/BannerlordSceneStudio` |
+| `BANNERLORD_CRAFTING_TOOL` | The BannerlordCraftingTool CLI checkout, for `bannerlord-crafting-offsets`. If unset, `scripts/resolve-tool.ps1` finds or clones it |
+| `BANNERLORD_NAVMESH_STUDIO` | The Bannerlord Scene Studio checkout, for the navmesh skills. If unset, `scripts/resolve-tool.ps1` finds or clones it |
 
 ## Tool sources
 
@@ -101,6 +131,19 @@ The tool source is checked out as git submodules under `tools/`:
 
 Run `git submodule update --init --recursive` in an editing checkout to fetch them. Build the
 CLI with `dotnet build tools/BannerlordCraftingTool.CLI/BannerlordCraftingTool.Cli -c Release`.
+
+APM snapshots drop submodule contents, so `tools.lock.json` pins each tool's commit for consumers.
+`scripts/resolve-tool.ps1 <name>` prints the checkout to use, in this order:
+1. the tool's env var
+2. the `tools/` submodule
+3. `~/.bannerlord-agent/tools/<name>`, cloned at the pinned commit if missing
+
+To release a tool bump, move the submodule pointer, update `tools.lock.json` to the same commit,
+and check that they agree before tagging:
+
+```powershell
+./scripts/resolve-tool.ps1 -Check
+```
 
 ## Project settings
 

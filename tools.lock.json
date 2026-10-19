@@ -1,0 +1,12 @@
+{
+  "BannerlordCraftingTool.CLI": {
+    "env": "BANNERLORD_CRAFTING_TOOL",
+    "url": "https://github.com/JoeFwd/BannerlordCraftingTool.CLI.git",
+    "commit": "458b26ad3659f7966e0099997259cff50c836f98"
+  },
+  "BannerlordSceneStudio": {
+    "env": "BANNERLORD_NAVMESH_STUDIO",
+    "url": "https://github.com/JoeFwd/BannerlordSceneStudio.git",
+    "commit": "24e3c5b43bfb22322f5f0369871c8357a2e7e519"
+  }
+}

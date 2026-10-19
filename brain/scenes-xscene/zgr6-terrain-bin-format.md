@@ -5,7 +5,7 @@ type: reference
 topic: scenes-xscene
 tags: [terrain, format, zgr6]
 sources: [Bannerlord Navmesh Studio (README, blnav docstrings)]
-updated: 2026-10-18
+updated: 2026-10-19
 ---
 
 # ZGR6 terrain.bin
@@ -18,6 +18,6 @@ Header `ZGR6RTRN`, version 2, then five 20-byte descriptors in order MIDX HGHT N
 - WGHT: see [[zgr6-wght-needs-16-slots]].
 - PHYM: see [[zgr6-phym-layer-index-cells]].
 
-The writer was validated in game. Campaign-map orientation: X east, Y north, no flip.
+The writer (`blnav/terrain_write.py`, now on the studio's `scene-generation` branch) was validated in game. Campaign-map orientation: X east, Y north, no flip.
 
 Related: [[ok01-terrain-ed-format]], [[xscene-terrain-node-records-must-match-terrain-bin]]

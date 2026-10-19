@@ -168,7 +168,7 @@ $bridgeMcpUrl = if ($env:JETBRAINS_MCP_URL) { $env:JETBRAINS_MCP_URL } else { 'h
 
 if (-not (Test-Path $bridgeExe)) {
     Write-Host "Installing JetBrainsDebuggerPauseMonitor..."
-    dotnet tool install --global JetBrainsDebuggerPauseMonitor | Out-Null
+    dotnet tool install --global JetBrainsDebuggerPauseMonitor --version 1.0.0 | Out-Null
 }
 
 # Some published builds ship without nlog.config and crash on startup. Provision

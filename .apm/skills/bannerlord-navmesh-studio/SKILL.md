@@ -2,8 +2,8 @@
 name: bannerlord-navmesh-studio
 description: >
   Bannerlord Navmesh Studio: a Python library, web GUI and MCP server that reads and
-  writes scene navmesh.bin (RNM1/NMG9), navmesh prefabs (NMG8), terrain.bin (ZGR6) and
-  the terrain_ed.bin container (OK01). Use it when inspecting, validating, generating or
+  writes scene navmesh.bin (RNM1/NMG9) and navmesh prefabs (NMG8), reads terrain.bin (ZGR6),
+  and documents the terrain_ed.bin container (OK01). Use it when inspecting, validating, generating or
   hand-editing a scene or campaign-map navmesh, sampling terrain heights, checking g5
   scene-level masks, or placing settlements on a campaign map navmesh.
 ---
@@ -11,8 +11,17 @@ description: >
 # Bannerlord Navmesh Studio
 
 The studio is a Git repository (https://github.com/JoeFwd/BannerlordSceneStudio). Its path is
-`$env:BANNERLORD_NAVMESH_STUDIO`. If the variable is unset, use the bannerlord-agent checkout's
-`tools/BannerlordSceneStudio` submodule. If that is missing too, ask the user. Never guess a path.
+`$env:BANNERLORD_NAVMESH_STUDIO`. If the variable is unset, resolve it with the bannerlord-agent
+package's resolver (`apm_modules/JoeFwd/bannerlord-agent` in a consumer repo):
+
+```powershell
+$env:BANNERLORD_NAVMESH_STUDIO = & <bannerlord-agent>/scripts/resolve-tool.ps1 BannerlordSceneStudio
+```
+
+It returns the `tools/` submodule of an editing checkout if one exists. Otherwise it clones the
+studio into `~/.bannerlord-agent/tools/BannerlordSceneStudio` at the commit pinned in
+`tools.lock.json`. It never updates an existing clone; pass on any commit-mismatch warning to
+the user. Never guess a path.
 
 Requires Python >= 3.11 with `lz4 numpy pillow fastmcp fastapi uvicorn`
 (`pip install -e "$env:BANNERLORD_NAVMESH_STUDIO"`).
@@ -20,12 +29,15 @@ Requires Python >= 3.11 with `lz4 numpy pillow fastmcp fastapi uvicorn`
 ## Layout
 
 - `blnav/`: core formats (`rnm1`, `nmg9`, `nmg8`, `terrain`, `xscene`, `lz4raw`, `generate`)
-- `blscene/`: scene composition helpers
 - `server/web.py`: web GUI on http://127.0.0.1:8770
 - `server/mcp_server.py`: MCP server for LLM-driven editing
 - `tests/`: round-trip and validation suite
 - `README.md`: the full decoded format reference (RNM1, NMG9, NMG8, ZGR6, OK01). Read it before
   reasoning about bytes.
+
+The experimental scene composer (`blscene/`), corpus harvesting and the ZGR6 terrain writer
+(`blnav/terrain_write.py`) are not on `develop`. They live on the studio's `scene-generation`
+branch.
 
 ## Web GUI
 

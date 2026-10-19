@@ -5,7 +5,7 @@ type: reference
 topic: modding-tools-editor
 tags: [navmesh, tool, rnm1, nmg9, fastapi, probe-point]
 sources: [memory/navmesh-studio-tool.md, navmesh-studio-tool-overview]
-updated: 2026-10-18
+updated: 2026-10-19
 ---
 
 # Navmesh studio tool (`BANNERLORD_NAVMESH_STUDIO`)
@@ -24,5 +24,5 @@ A standalone tool outside the repos: a general **navmesh read/edit/generate/writ
 
 Verify a repair by recomputing connected components over **shared edge ids**, not vertex proximity. See [[navmesh-faces-must-be-tris-or-quads]], [[navmesh-duplicate-corner-face-crash]].
 
-Parts: `blnav` (formats and editing core), an MCP server, the web GUI, and `blscene` (scene composer, see [[scene-composer-workflow]]). MCP tools: load_scene, scene_info, sample_height, query_faces, generate_navmesh, add_face, delete_faces, set_face_attributes, validate_navmesh, move_vertex, snap_to_terrain, save_navmesh, export_obj. The generator uses 4 m grid cells, a 40 degree slope limit and quad faces, then rebuilds edges. GUI camera keys use `event.code` (physical key position): WASD on QWERTY is ZQSD on AZERTY. Tests: unit tests plus a Gherkin/Playwright suite that boots its own server on an ephemeral port and never calls save endpoints. Formats: [[rnm1-container-format]], [[ok01-terrain-ed-format]].
+Parts: `blnav` (formats and editing core), an MCP server, the web GUI, and, on the `scene-generation` branch only, `blscene` (scene composer, see [[scene-composer-workflow]]). MCP tools: load_scene, scene_info, sample_height, query_faces, generate_navmesh, add_face, delete_faces, set_face_attributes, validate_navmesh, move_vertex, snap_to_terrain, save_navmesh, export_obj. The generator uses 4 m grid cells, a 40 degree slope limit and quad faces, then rebuilds edges. GUI camera keys use `event.code` (physical key position): WASD on QWERTY is ZQSD on AZERTY. Tests: unit tests plus a Gherkin/Playwright suite that boots its own server on an ephemeral port and never calls save endpoints. Formats: [[rnm1-container-format]], [[ok01-terrain-ed-format]].
 
