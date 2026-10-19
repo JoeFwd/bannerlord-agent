@@ -8,7 +8,9 @@ import re
 import sys
 from pathlib import Path
 
-DEFAULT_STUDIO = os.environ.get("BANNERLORD_NAVMESH_STUDIO")
+FALLBACK_STUDIO = Path("submodules/bannerlord-agent/tools/BannerlordSceneStudio")  # relative to the CWD
+DEFAULT_STUDIO = os.environ.get("BANNERLORD_NAVMESH_STUDIO") or (
+    str(FALLBACK_STUDIO) if FALLBACK_STUDIO.is_dir() else None)
 WATER_RE = re.compile(r'<property\s+name="water_level"\s+value="([^"]+)"')
 
 
@@ -154,11 +156,14 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--bounds", nargs=4, required=True, type=float, metavar=("X0", "X1", "Y0", "Y1"))
     parser.add_argument("--output", required=True, type=Path)
     parser.add_argument("--studio", type=Path, default=DEFAULT_STUDIO,
-                        required=DEFAULT_STUDIO is None,
-                        help="Bannerlord Navmesh Studio checkout (default: $BANNERLORD_NAVMESH_STUDIO)")
+                        help="Bannerlord Navmesh Studio checkout (default: $BANNERLORD_NAVMESH_STUDIO, else "
+                             "./submodules/bannerlord-agent/tools/BannerlordSceneStudio; "
+                             "if neither exists, set BANNERLORD_NAVMESH_STUDIO or pass --studio)")
     parser.add_argument("--samples", type=int, default=700)
     parser.add_argument("--dpi", type=int, default=150)
     args = parser.parse_args()
+    if args.studio is None:
+        parser.error("Navmesh Studio not found: set BANNERLORD_NAVMESH_STUDIO or pass --studio <checkout>")
     if args.samples < 2:
         parser.error("--samples must be at least 2")
     return args

@@ -11,7 +11,7 @@ Use `scripts/render_navmesh_preview.py` to produce a read-only PNG from a scene 
 python scripts/render_navmesh_preview.py "<scene-directory>" --bounds X0 X1 Y0 Y1 --output "<preview.png>"
 ```
 
-Pass `--navmesh <candidate.navmesh.bin>` to preview a candidate while retaining the scene terrain, The script imports Bannerlord Navmesh Studio's parsers: pass `--studio <checkout>` or set `BANNERLORD_NAVMESH_STUDIO` (see the `bannerlord-navmesh-studio` skill).
+Pass `--navmesh <candidate.navmesh.bin>` to preview a candidate while retaining the scene terrain, The script imports Bannerlord Navmesh Studio's parsers: pass `--studio <checkout>` or set `BANNERLORD_NAVMESH_STUDIO`; if neither is given it uses `./submodules/bannerlord-agent/tools/BannerlordSceneStudio` relative to the working directory, else the script exits asking for one of them (see the `bannerlord-navmesh-studio` skill).
 
 The plot preserves Bannerlord world X/Y orientation (Y increases upward), decodes terrain elevation from `terrain.bin` using the scene parameters, reads the scene water level when present, draws actual polygon edges and red vertices, and fills `g3=7` Mountain faces purple and `g3=8` Lake faces blue.
 
