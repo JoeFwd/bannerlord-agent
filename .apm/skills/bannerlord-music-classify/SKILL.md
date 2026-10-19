@@ -44,7 +44,7 @@ ffmpeg -i "<input_file>" -vn -c:a libopus -b:a 128k "<ogg_path>"
 
 ### Step 1: Analyse the audio
 
-Run `mcp__music-analysis__full_analysis` on `ogg_path`.
+Run `mcp__music-analysis__full_analysis` on `ogg_path`. If the tool is missing, the project's `apm.yml` lacks the `music-analysis` MCP entry; point the user to the example in the bannerlord-agent README and stop.
 
 This single tool returns all needed data: duration, tempo, beat times, key, spectral features, and MFCCs.
 

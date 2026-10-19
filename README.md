@@ -29,9 +29,12 @@ See [Install](#install) for the `apm.yml` lines that add this package.
 | | Background processes: one search server per version (ports 5000+), the pause monitor (7777) and GABS (8080). If port 8080 is not answering, any running `gabs` process is stopped and restarted | logs in `%TEMP%` |
 | First use of `bannerlord-crafting-offsets` or the navmesh skills | A `git clone` of the tool at the commit pinned in `tools.lock.json`, skipped if `BANNERLORD_*` or the `tools/` submodule already provides it. The skill then builds it (`dotnet build`) or installs it (`pip install -e`) | `~/.bannerlord-agent/tools/<name>` |
 | Sprite skills | `pip install Pillow` | your Python environment |
+| `bannerlord-music-classify` | `mcp_local_music_analysis` 0.1.0 and `mcp` 1.30.0 from PyPI, run by `uvx -n` (no cache, so they are fetched on each start; their other dependencies are not pinned) for the consumer's `music-analysis` MCP entry. The skill also expects `ffmpeg` on PATH; it does not install it | uv's tool environment |
 
-Nothing else is downloaded. Every version above is pinned by the package release, so upgrading
-the package is the only thing that changes them. An existing tool clone is never updated in
+Nothing else is downloaded. Every version above except Pillow and the music server's indirect dependencies is pinned by the package release,
+so upgrading the package is the only thing that changes them. APM deploys the hooks without a
+trust prompt (it only gates `bin/` executables, which this package has none of), so the
+session-start hook runs as soon as you open the next session. An existing tool clone is never updated in
 place; the skill reports a commit mismatch instead.
 
 ## Contents
@@ -75,7 +78,7 @@ In your mod's agent package (or directly in the mod repo's `apm.yml`):
 ```yaml
 dependencies:
   apm:
-    - JoeFwd/bannerlord-agent#v0.1.4
+    - JoeFwd/bannerlord-agent#v0.1.5
 ```
 
 MCP servers are declared by the consuming project, which owns the ports. Example:
@@ -106,10 +109,21 @@ MCP servers are declared by the consuming project, which owns the ports. Example
         - apm_modules/JoeFwd/bannerlord-agent/.apm/mcp/mcp-http-stdio-bridge.py
         - --url
         - http://localhost:5002
+    - name: music-analysis               # for bannerlord-music-classify
+      registry: false
+      transport: stdio
+      command: uvx
+      args:
+        - "-n"
+        - --with
+        - mcp==1.30.0                    # 0.1.0 breaks on mcp 2.x
+        - mcp_local_music_analysis@0.1.0
 ```
 
 The SessionStart hook reads the `bannerlord-search-<version>` entries from `.mcp.json` and
-starts one BannerlordSearch server per version, on port 5000 and up.
+starts one BannerlordSearch server per version, on port 5000 and up. Declare these servers in
+the consuming `apm.yml`: APM drops MCP servers declared by a dependency unless every install
+passes `--trust-transitive-mcp`.
 
 ## Environment variables
 
