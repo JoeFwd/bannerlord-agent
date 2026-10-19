@@ -4,6 +4,11 @@ How to handle the Rider debugger and GABS during a live Bannerlord session.
 
 ## CLR Exception Breakpoints
 
+The breakpoint set comes from the project's `.rider-debugger-settings` file (next to the `.sln`),
+enforced by the [rider-clr-exception-override](https://github.com/JoeFwd/rider-clr-exception-override)
+Rider plugin. Change the exception list there, not in Rider's breakpoint dialog: the plugin
+overrides the dialog while the project is open.
+
 Rider is configured with CLR exception breakpoints that fire on first-chance exceptions —
 exceptions the game does **not** handle, which will cause a crash on resume.
 

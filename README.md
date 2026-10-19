@@ -14,6 +14,30 @@ A mod adds its own context in a separate package that depends on this one.
 | `.apm/mcp/mcp-http-stdio-bridge.py` | A stdio-to-HTTP MCP bridge for the local servers |
 | `brain/` | The knowledge base: one lesson per note, Obsidian wikilinks. Start at `brain/INDEX.md` |
 
+## Prerequisites for live debugging
+
+The GABS / Rider skills (`bannerlord-gabs-*`, `bannerlord-debug`, the playtester agent) need:
+
+| Requirement | Why |
+|---|---|
+| JetBrains Rider 2026.1+ | runs the mod's debug configuration |
+| [Debugger MCP Server](https://plugins.jetbrains.com/plugin/29233-debugger-mcp-server) Rider plugin | exposes the debugger at `http://127.0.0.1:29202/debugger-mcp/streamable-http` (the `jetbrains-debugger` MCP server and the PreToolUse pause guard use it) |
+| [rider-clr-exception-override](https://github.com/JoeFwd/rider-clr-exception-override) Rider plugin | enforces the project's CLR exception breakpoint set, so the debugger stops on real crash exceptions instead of benign first-chance ones |
+| [GABS](https://github.com/pardeike/GABS) + a GABP-enabled game | game control for the `bannerlord-game-controller` MCP server (`GABS_EXE`) |
+
+Install both Rider plugins via **Settings -> Plugins** (the exception override from its release
+`.zip` via **Install Plugin from Disk**). Then add a `.rider-debugger-settings` file next to the
+mod's `.sln`, for example:
+
+```properties
+DotNetDebuggerSettings.processExceptionsOutsideMyCode=true
+
+CLRExceptionBreakpoints=System.NullReferenceException,                         System.AccessViolationException,                         System.StackOverflowException,                         System.TypeInitializationException,                         System.IndexOutOfRangeException,                         System.ArgumentOutOfRangeException,                         System.ArgumentNullException
+```
+
+Listed types break on every suspend condition; all other CLR exception breakpoints are disabled
+while the project is open, and restored when it closes.
+
 ## Install
 
 In your mod's agent package (or directly in the mod repo's `apm.yml`):
@@ -21,7 +45,7 @@ In your mod's agent package (or directly in the mod repo's `apm.yml`):
 ```yaml
 dependencies:
   apm:
-    - JoeFwd/bannerlord-agent#v0.1.1
+    - JoeFwd/bannerlord-agent#v0.1.2
 ```
 
 MCP servers are declared by the consuming project, which owns the ports. Example:

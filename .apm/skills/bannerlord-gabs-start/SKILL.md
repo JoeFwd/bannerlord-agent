@@ -20,6 +20,21 @@ tools are live.
 
 ---
 
+## Prerequisites
+
+If any of these is missing, stop and tell the user instead of working around it:
+
+- Rider with the [Debugger MCP Server](https://plugins.jetbrains.com/plugin/29233-debugger-mcp-server)
+  plugin. `http://127.0.0.1:29202/debugger-mcp/streamable-http` must answer.
+- The [rider-clr-exception-override](https://github.com/JoeFwd/rider-clr-exception-override)
+  plugin and a `.rider-debugger-settings` file next to the mod's `.sln`. Without it, Rider's own
+  exception breakpoint set applies, and it either pauses constantly on benign load exceptions
+  or misses real crashes.
+- [GABS](https://github.com/pardeike/GABS) (`$env:GABS_EXE` or `gabs` on PATH) and a
+  GABP-enabled build of the game.
+
+---
+
 ## Project resolution
 
 Take these from the project's Bannerlord agent settings (an instructions/rules file
