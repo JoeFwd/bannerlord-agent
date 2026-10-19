@@ -2,7 +2,7 @@
 #
 # Starts every local service Claude Code depends on, all on the Windows host:
 #   1. .NET SDK / runtime sanity check
-#   2. Bannerlord-search MCP servers (one per version in .mcp.json) on :5000+
+#   2. Bannerlord-search MCP servers (one per version in .mcp.json) on each entry's --url port
 #   3. JetBrains debugger pause monitor ("jb-debug-bridge") on :7777
 #   4. GABS HTTP server (game-controller MCP backend) on :8080
 #
@@ -62,10 +62,16 @@ if (-not (Test-Path $mcpConfigPath)) {
     Write-Host "ERROR: .mcp.json not found at $mcpConfigPath — skipping search servers."
 } else {
     $mcp = Get-Content $mcpConfigPath -Raw | ConvertFrom-Json
-    # Property order is preserved by ConvertFrom-Json, so it sets the port order.
-    $versions = @($mcp.mcpServers.PSObject.Properties.Name |
-        Where-Object { $_ -match '^bannerlord-search-(.+)$' } |
-        ForEach-Object { $Matches[1] -replace '_', '.' })
+    # Each bannerlord-search-<version> entry's --url names the port its server listens on.
+    $portOf = [ordered]@{}
+    foreach ($server in $mcp.mcpServers.PSObject.Properties) {
+        if ($server.Name -notmatch '^bannerlord-search-(.+)$') { continue }
+        $v = $Matches[1] -replace '_', '.'
+        $url = @($server.Value.args) -match '^https?://[^/]+:\d+' | Select-Object -First 1
+        if ($url -match ':(\d+)') { $portOf[$v] = [int]$Matches[1] }
+        else { Write-Host "WARNING: $($server.Name) has no --url with a port — skipping." }
+    }
+    $versions = @($portOf.Keys)
 
     if ($versions.Count -eq 0) {
         Write-Host "WARNING: no bannerlord-search-* servers in .mcp.json."
@@ -127,12 +133,10 @@ if (-not (Test-Path $mcpConfigPath)) {
         # session's servers persist across Claude Code restarts, so the common case
         # is "all up" — restarting + waiting on them every session blocks (and times
         # out) the session start for no reason.
-        $basePort     = 5000
         $startedPorts = @()
-        for ($i = 0; $i -lt $versions.Count; $i++) {
-            $v = $versions[$i]
+        foreach ($v in $versions) {
             if (-not $contentPaths.ContainsKey($v)) { continue }
-            $port = $basePort + $i
+            $port = $portOf[$v]
             if (Test-PortReady -Port $port) {
                 Write-Host "BannerlordSearch.Mcp.Server v$v already up on port $port — skipping."
                 continue

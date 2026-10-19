@@ -1,8 +1,60 @@
 name: bannerlord-agent
-version: 0.1.5
+version: 0.1.6
 description: "Generic Mount & Blade II Bannerlord modding harness: debugging skills (GABS/GABP, Rider), modding-tool skills, hooks, MCP bridge and a shared knowledge brain."
 type: hybrid
 targets:
   - claude
   - codex
 includes: auto
+dependencies:
+  mcp:
+    # bannerlord-search-<version>: the session-start hook starts one source server per entry,
+    # on the port in its --url.
+    - name: bannerlord-search-1_2_12
+      registry: false
+      transport: stdio
+      command: python
+      args:
+        - apm_modules/JoeFwd/bannerlord-agent/.apm/mcp/mcp-http-stdio-bridge.py
+        - --url
+        - http://localhost:5000
+    - name: bannerlord-search-1_3_15
+      registry: false
+      transport: stdio
+      command: python
+      args:
+        - apm_modules/JoeFwd/bannerlord-agent/.apm/mcp/mcp-http-stdio-bridge.py
+        - --url
+        - http://localhost:5001
+    - name: bannerlord-search-1_4_8
+      registry: false
+      transport: stdio
+      command: python
+      args:
+        - apm_modules/JoeFwd/bannerlord-agent/.apm/mcp/mcp-http-stdio-bridge.py
+        - --url
+        - http://localhost:5002
+    - name: bannerlord-game-controller
+      registry: false
+      transport: stdio
+      command: python
+      args:
+        - apm_modules/JoeFwd/bannerlord-agent/.apm/mcp/mcp-http-stdio-bridge.py
+        - --url
+        - http://localhost:8080/mcp
+    - name: jetbrains-debugger
+      registry: false
+      transport: stdio
+      command: python
+      args:
+        - apm_modules/JoeFwd/bannerlord-agent/.apm/mcp/mcp-http-stdio-bridge.py
+        - --url
+        - http://localhost:29202/debugger-mcp/streamable-http
+    - name: music-analysis
+      registry: false
+      transport: stdio
+      command: uvx
+      args:
+        - --with
+        - mcp==1.30.0  # 0.1.0 breaks on mcp 2.x
+        - mcp_local_music_analysis@0.1.0

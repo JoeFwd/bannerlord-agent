@@ -24,12 +24,12 @@ See [Install](#install) for the `apm.yml` lines that add this package.
 |---|---|---|
 | `apm install` | This package and its dependencies, pinned to the tags in `apm.lock.yaml` | `apm_modules/`, `.claude/`, `.codex/` and `.mcp.json` in your project |
 | Each session start (hook) | `BannerlordSearch.Mcp.Server` 0.2.0, a global .NET tool | `~/.dotnet/tools` |
-| | `BannerlordSearch.Source`, one NuGet package per `bannerlord-search-<version>` server in `.mcp.json` (the game's source, for code search) | `~/.nuget/packages/bannerlordsearch.source/<version>` |
+| | `BannerlordSearch.Source`, one NuGet package per `bannerlord-search-<version>` server (the game's source, for code search) | `~/.nuget/packages/bannerlordsearch.source/<version>` |
 | | `JetBrainsDebuggerPauseMonitor` 1.0.0, a global .NET tool, plus an `nlog.config` next to it if the package lacks one | `~/.dotnet/tools` |
 | | Background processes: one search server per version (ports 5000+), the pause monitor (7777) and GABS (8080). If port 8080 is not answering, any running `gabs` process is stopped and restarted | logs in `%TEMP%` |
 | First use of `bannerlord-crafting-offsets` or the navmesh skills | A `git clone` of the tool at the commit pinned in `tools.lock.json`, skipped if `BANNERLORD_*` or the `tools/` submodule already provides it. The skill then builds it (`dotnet build`) or installs it (`pip install -e`) | `~/.bannerlord-agent/tools/<name>` |
 | Sprite skills | `pip install Pillow` | your Python environment |
-| `bannerlord-music-classify` | `mcp_local_music_analysis` 0.1.0 and `mcp` 1.30.0 from PyPI, run by `uvx -n` (no cache, so they are fetched on each start; their other dependencies are not pinned) for the consumer's `music-analysis` MCP entry. The skill also expects `ffmpeg` on PATH; it does not install it | uv's tool environment |
+| `bannerlord-music-classify` | `mcp_local_music_analysis` 0.1.0 and `mcp` 1.30.0 from PyPI, run by `uvx` for the `music-analysis` MCP server (their other dependencies are not pinned). The skill also expects `ffmpeg` on PATH; it does not install it | uv's tool environment |
 
 Nothing else is downloaded. Every version above except Pillow and the music server's indirect dependencies is pinned by the package release,
 so upgrading the package is the only thing that changes them. APM deploys the hooks without a
@@ -78,52 +78,23 @@ In your mod's agent package (or directly in the mod repo's `apm.yml`):
 ```yaml
 dependencies:
   apm:
-    - JoeFwd/bannerlord-agent#v0.1.5
+    - JoeFwd/bannerlord-agent#v0.1.6
 ```
 
-MCP servers are declared by the consuming project, which owns the ports. Example:
+That is all. `apm install` writes these MCP servers into `.mcp.json`:
 
-```yaml
-  mcp:
-    - name: bannerlord-game-controller
-      registry: false
-      transport: stdio
-      command: python
-      args:
-        - apm_modules/JoeFwd/bannerlord-agent/.apm/mcp/mcp-http-stdio-bridge.py
-        - --url
-        - http://localhost:8080/mcp
-    - name: jetbrains-debugger
-      registry: false
-      transport: stdio
-      command: python
-      args:
-        - apm_modules/JoeFwd/bannerlord-agent/.apm/mcp/mcp-http-stdio-bridge.py
-        - --url
-        - http://localhost:29202/debugger-mcp/streamable-http
-    - name: bannerlord-search-1_4_8      # one per game version
-      registry: false
-      transport: stdio
-      command: python
-      args:
-        - apm_modules/JoeFwd/bannerlord-agent/.apm/mcp/mcp-http-stdio-bridge.py
-        - --url
-        - http://localhost:5002
-    - name: music-analysis               # for bannerlord-music-classify
-      registry: false
-      transport: stdio
-      command: uvx
-      args:
-        - "-n"
-        - --with
-        - mcp==1.30.0                    # 0.1.0 breaks on mcp 2.x
-        - mcp_local_music_analysis@0.1.0
-```
+| Server | What it connects to |
+|---|---|
+| `bannerlord-search-1_2_12`, `-1_3_15`, `-1_4_8` | Game source search per version, on ports 5000-5002 (started by the session-start hook) |
+| `bannerlord-game-controller` | GABS, port 8080 |
+| `jetbrains-debugger` | The Rider Debugger MCP plugin, port 29202 |
+| `music-analysis` | `mcp_local_music_analysis`, run by `uvx` |
 
-The SessionStart hook reads the `bannerlord-search-<version>` entries from `.mcp.json` and
-starts one BannerlordSearch server per version, on port 5000 and up. Declare these servers in
-the consuming `apm.yml`: APM drops MCP servers declared by a dependency unless every install
-passes `--trust-transitive-mcp`.
+APM only deploys MCP servers from packages your `apm.yml` lists directly. If you depend on this
+package through another package (a mod layer such as dadg-agent), that layer must copy the
+`mcp:` block from this `apm.yml` into its own. To add a game version, add a
+`bannerlord-search-<version>` entry on a free port in your own `apm.yml`; the hook reads the
+port from its `--url`.
 
 ## Environment variables
 
