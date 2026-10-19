@@ -20,26 +20,18 @@ See [Install](#install) for the `apm.yml` lines that add this package.
 
 ## What it installs on your machine
 
+Prerequisites: .NET SDK, git and [uv](https://docs.astral.sh/uv/) (all Python runs through uv on Python 3.12).
+
 | When | What | Where |
 |---|---|---|
-| `apm install` | This package and its dependencies, pinned to the tags in `apm.lock.yaml` | `apm_modules/`, `.claude/`, `.codex/` and `.mcp.json` in your project |
-| Each session start (hook) | `BannerlordSearch.Mcp.Server` 0.2.0, a global .NET tool | `~/.dotnet/tools` |
-| | `BannerlordSearch.Source`, one NuGet package per `bannerlord-search-<version>` server (the game's source, for code search) | `~/.nuget/packages/bannerlordsearch.source/<version>` |
-| | `JetBrainsDebuggerPauseMonitor` 1.0.0, a global .NET tool, plus an `nlog.config` next to it if the package lacks one | `~/.dotnet/tools` |
-| | Background processes: one search server per version (ports 5000+), the pause monitor (7777) and GABS (8080). If port 8080 is not answering, any running `gabs` process is stopped and restarted | logs in `~/.bannerlord-agent/logs` |
-| First use of `bannerlord-crafting-offsets` or the navmesh skills | A `git clone` of the tool at the commit pinned in `tools.lock.json`, skipped if `BANNERLORD_*` or the `tools/` submodule already provides it. The crafting skill then builds it (`dotnet build`); the navmesh skills run it through `uv` with the dependencies pinned in the skill (nothing is installed into the checkout) | `~/.bannerlord-agent/tools/<name>` |
-| Sprite and navmesh skills | Pinned PyPI packages (Pillow 12.1.1; the studio's lz4, numpy, fastmcp, fastapi, uvicorn; matplotlib for previews), fetched by `uv run` on first use | uv's cache |
-| `bannerlord-music-classify` | `mcp_local_music_analysis` 0.1.0 and `mcp` 1.30.0 from PyPI, run by `uvx` for the `music-analysis` MCP server (their other dependencies are not pinned). The skill also expects `ffmpeg` on PATH; it does not install it | uv's tool environment |
+| `apm install` | This package and its dependencies | `apm_modules/`, `.claude/`, `.codex/`, `.mcp.json` |
+| Session start (hook) | .NET tools `BannerlordSearch.Mcp.Server` 0.2.0 and `JetBrainsDebuggerPauseMonitor` 1.0.0 | `~/.dotnet/tools` |
+| | Game source packages, one per `bannerlord-search-<version>` server | `~/.nuget/packages` |
+| | Background servers: search (5000+), pause monitor (7777), GABS (8080) | logs in `~/.bannerlord-agent/logs` |
+| First use of the crafting or navmesh skills | A clone of the tool at the commit in `tools.lock.json`, unless `BANNERLORD_*` or the `tools/` submodule provides it | `~/.bannerlord-agent/tools` |
+| Python skills and MCP servers | Pinned PyPI packages (Pillow, the Studio's dependencies, `mcp_local_music_analysis`) | uv's cache |
 
-Every Python program, including the MCP bridge, runs through `uv run` / `uvx`, so [uv](https://docs.astral.sh/uv/) is the only
-Python prerequisite and nothing is installed into your own Python (uv fetches Python 3.12 itself if
-no suitable one is installed).
-
-Nothing else is downloaded. Every version above except the Python packages' indirect dependencies is pinned by the package release,
-so upgrading the package is the only thing that changes them. APM deploys the hooks without a
-trust prompt (it only gates `bin/` executables, which this package has none of), so the
-session-start hook runs as soon as you open the next session. An existing tool clone is never updated in
-place; the skill reports a commit mismatch instead.
+`bannerlord-music-classify` also needs `ffmpeg` on PATH.
 
 ## Contents
 
