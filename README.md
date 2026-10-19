@@ -53,6 +53,7 @@ The GABS / Rider skills (`bannerlord-gabs-*`, `bannerlord-debug`, the playtester
 | [Debugger MCP Server](https://plugins.jetbrains.com/plugin/29233-debugger-mcp-server) Rider plugin | exposes the debugger at `http://127.0.0.1:29202/debugger-mcp/streamable-http` (the `jetbrains-debugger` MCP server and the PreToolUse pause guard use it) |
 | [rider-clr-exception-override](https://github.com/JoeFwd/rider-clr-exception-override) Rider plugin | enforces the project's CLR exception breakpoint set, so the debugger stops on real crash exceptions instead of benign first-chance ones |
 | [GABS](https://github.com/pardeike/GABS) + a GABP-enabled game | game control for the `bannerlord-game-controller` MCP server (`GABS_EXE`) |
+| [ButterLib](https://github.com/BUTR/Bannerlord.ButterLib) with `ExceptionHandlerSubSystem Enabled`, `CrashUploader Enabled` and `CrashUploaderSubSystem Enabled` set to `false` in `Documents\Mount and Blade II Bannerlord\Configs\ModSettings\ButterLib\Options.json` | keeps ButterLib's crash window and crash upload out of the way when Rider pauses on an exception |
 
 Install both Rider plugins via **Settings -> Plugins** (the exception override from its release
 `.zip` via **Install Plugin from Disk**). Then add a `.rider-debugger-settings` file next to the
