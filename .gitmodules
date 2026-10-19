@@ -1,0 +1,8 @@
+[submodule "tools/BannerlordSceneStudio"]
+	path = tools/BannerlordSceneStudio
+	url = https://github.com/JoeFwd/BannerlordSceneStudio.git
+	branch = develop
+[submodule "tools/BannerlordCraftingTool.CLI"]
+	path = tools/BannerlordCraftingTool.CLI
+	url = https://github.com/JoeFwd/BannerlordCraftingTool.CLI.git
+	branch = main

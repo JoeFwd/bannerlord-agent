@@ -34,8 +34,8 @@ Skills never hard-code machine paths. They read these environment variables:
 |---|---|---|
 | `GABS_EXE` | session-start hook, `bannerlord-gabs-*` | `gabs` on PATH |
 | `ASSERT_AUTO_IGNORE_EXE` | `bannerlord-gabs-start` | skip popup auto-dismiss |
-| `BANNERLORD_CRAFTING_TOOL` | `bannerlord-crafting-offsets` | ask the user |
-| `BANNERLORD_NAVMESH_STUDIO` | `bannerlord-navmesh-studio`, `bannerlord-navmesh-preview` | ask the user |
+| `BANNERLORD_CRAFTING_TOOL` | `bannerlord-crafting-offsets` | the `tools/` submodule in the bannerlord-agent checkout, else ask the user |
+| `BANNERLORD_NAVMESH_STUDIO` | `bannerlord-navmesh-studio`, `bannerlord-navmesh-preview` | the `tools/` submodule in the bannerlord-agent checkout, else ask the user |
 
 Mod-specific values live in the mod package's **Bannerlord agent settings** instruction:
 - the Rider debug configuration name and `project_path`

@@ -87,8 +87,20 @@ starts one BannerlordSearch server per version, on port 5000 and up.
 |---|---|
 | `GABS_EXE` | The `gabs.exe` path. If unset, `gabs` must be on PATH |
 | `ASSERT_AUTO_IGNORE_EXE` | Optional. The AssertAutoIgnore popup dismisser |
-| `BANNERLORD_CRAFTING_TOOL` | The BannerlordCraftingTool checkout, for `bannerlord-crafting-offsets` |
-| `BANNERLORD_NAVMESH_STUDIO` | The Bannerlord Navmesh Studio checkout, for the navmesh skills |
+| `BANNERLORD_CRAFTING_TOOL` | The BannerlordCraftingTool CLI checkout, for `bannerlord-crafting-offsets`. Defaults to `tools/BannerlordCraftingTool.CLI` |
+| `BANNERLORD_NAVMESH_STUDIO` | The Bannerlord Scene Studio checkout, for the navmesh skills. Defaults to `tools/BannerlordSceneStudio` |
+
+## Tool sources
+
+The tool source is checked out as git submodules under `tools/`:
+
+| Path | Repository |
+|---|---|
+| `tools/BannerlordCraftingTool.CLI` | https://github.com/JoeFwd/BannerlordCraftingTool.CLI |
+| `tools/BannerlordSceneStudio` | https://github.com/JoeFwd/BannerlordSceneStudio (private) |
+
+Run `git submodule update --init --recursive` in an editing checkout to fetch them. Build the
+CLI with `dotnet build tools/BannerlordCraftingTool.CLI/BannerlordCraftingTool.Cli -c Release`.
 
 ## Project settings
 

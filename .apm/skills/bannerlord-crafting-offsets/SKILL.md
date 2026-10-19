@@ -5,7 +5,7 @@ description: Diagnose and fix Bannerlord crafted-item reach, length, and piece a
 
 # Bannerlord Crafting Offsets
 
-Use the BannerlordCraftingTool CLI (checkout at `$env:BANNERLORD_CRAFTING_TOOL`; ask the user for it if unset) at `$env:BANNERLORD_CRAFTING_TOOL\BannerlordCraftingTool.Cli` to inspect calculated crafted-item layouts from a module's declared XML data.
+Use the BannerlordCraftingTool CLI (checkout at `$env:BANNERLORD_CRAFTING_TOOL`; if unset, use the bannerlord-agent checkout's `tools/BannerlordCraftingTool.CLI` submodule, else ask the user) at `$env:BANNERLORD_CRAFTING_TOOL\BannerlordCraftingTool.Cli` to inspect calculated crafted-item layouts from a module's declared XML data.
 
 Prefer the existing Release executable when available:
 

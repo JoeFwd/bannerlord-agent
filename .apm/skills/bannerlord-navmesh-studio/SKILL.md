@@ -10,8 +10,9 @@ description: >
 
 # Bannerlord Navmesh Studio
 
-The studio is a separate (private) Git checkout. Its path is `$env:BANNERLORD_NAVMESH_STUDIO`.
-If the variable is unset, ask the user where the checkout is. Never guess a path.
+The studio is a private Git repository (https://github.com/JoeFwd/BannerlordSceneStudio). Its path is
+`$env:BANNERLORD_NAVMESH_STUDIO`. If the variable is unset, use the bannerlord-agent checkout's
+`tools/BannerlordSceneStudio` submodule. If that is missing too, ask the user. Never guess a path.
 
 Requires Python >= 3.11 with `lz4 numpy pillow fastmcp fastapi uvicorn`
 (`pip install -e "$env:BANNERLORD_NAVMESH_STUDIO"`).
