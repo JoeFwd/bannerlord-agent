@@ -38,15 +38,12 @@ Parse the arguments to extract:
 - `--spriteparts` value
 - `--category` value (optional)
 
-First verify Python 3 and Pillow are available:
+This skill runs Python through uv, so nothing is installed into your Python. Check that uv
+is available:
 ```powershell
-python --version
-python -c "from PIL import Image; print('Pillow OK')"
+uv --version
 ```
-If Pillow is missing, install it:
-```powershell
-pip install Pillow
-```
+If uv is missing, stop and point the user to https://docs.astral.sh/uv/.
 
 Now run the following Python script, substituting real values for SPRITE_NAME, PNG_PATH, SPRITEDATA_PATH, SPRITEPARTS_DIR, CATEGORY_NAME (empty string if not provided):
 
@@ -183,5 +180,5 @@ print(f"\nUpdated: {spritedata}")
 print(f"\nNext step: run SpriteSheetGenerator.exe to repack the atlas into a .tpac")
 ```
 
-Pass the script to Python via PowerShell.
+Write the script to a temp file and run it with `uv run --isolated --no-project --with pillow==12.1.1 <file>`.
 Show the user the output, confirm what was changed, and remind them of the manual repack step.

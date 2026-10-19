@@ -8,7 +8,7 @@ description: Render an offline top-down preview of a Bannerlord scene navmesh ov
 Use `scripts/render_navmesh_preview.py` to produce a read-only PNG from a scene directory containing `scene.xscene`, `terrain.bin`, and `navmesh.bin`.
 
 ```powershell
-python scripts/render_navmesh_preview.py "<scene-directory>" --bounds X0 X1 Y0 Y1 --output "<preview.png>"
+uv run --isolated --no-project --python 3.12 --with lz4==4.4.5 --with numpy==2.4.3 --with matplotlib==3.10.8 scripts/render_navmesh_preview.py "<scene-directory>" --bounds X0 X1 Y0 Y1 --output "<preview.png>"
 ```
 
 Pass `--navmesh <candidate.navmesh.bin>` to preview a candidate while retaining the scene terrain, The script imports Bannerlord Navmesh Studio's parsers: pass `--studio <checkout>` or set `BANNERLORD_NAVMESH_STUDIO`; if neither is given it uses `./submodules/bannerlord-agent/tools/BannerlordSceneStudio` relative to the working directory, else the script exits asking for one of them. In that case resolve the checkout as the `bannerlord-navmesh-studio` skill describes and pass it as `--studio`.

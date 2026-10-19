@@ -35,15 +35,12 @@ Parse the arguments above to extract:
 - `--xml` value
 - `--output` value (if omitted, default to the directory containing the atlas file)
 
-First verify Python 3 and Pillow are available:
+This skill runs Python through uv, so nothing is installed into your Python. Check that uv
+is available:
 ```powershell
-python --version
-python -c "from PIL import Image; print('Pillow OK')"
+uv --version
 ```
-If Pillow is missing, install it:
-```powershell
-pip install Pillow
-```
+If uv is missing, stop and point the user to https://docs.astral.sh/uv/.
 
 Now run the following Python script, substituting the real values for SPRITE_NAME, ATLAS_PATH, XML_PATH, OUTPUT_DIR:
 
@@ -98,5 +95,5 @@ cropped.save(out_path)
 print(f"\nSaved: {out_path}  ({width}x{height} px)")
 ```
 
-Pass the script to Python via PowerShell.
+Write the script to a temp file and run it with `uv run --isolated --no-project --with pillow==12.1.1 <file>`.
 Report the output path and dimensions to the user.

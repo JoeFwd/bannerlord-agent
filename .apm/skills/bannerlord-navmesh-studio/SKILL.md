@@ -23,8 +23,9 @@ studio into `~/.bannerlord-agent/tools/BannerlordSceneStudio` at the commit pinn
 `tools.lock.json`. It never updates an existing clone; pass on any commit-mismatch warning to
 the user. Never guess a path.
 
-Requires Python >= 3.11 with `lz4 numpy pillow fastmcp fastapi uvicorn`
-(`pip install -e "$env:BANNERLORD_NAVMESH_STUDIO"`).
+Run its scripts with uv and this skill's `requirements.txt`, which pins the studio's dependencies.
+uv keeps them in its own cache, so nothing is installed into your Python and nothing is written
+into the checkout. `<skill>` below is the absolute path of this skill's folder (`.claude/skills/bannerlord-navmesh-studio`).
 
 ## Layout
 
@@ -42,7 +43,7 @@ branch.
 ## Web GUI
 
 ```powershell
-python "$env:BANNERLORD_NAVMESH_STUDIO\server\web.py" "<module>\SceneObj\<scene>"
+uv run --isolated --no-project --python 3.12 --with-requirements "<skill>\requirements.txt" "$env:BANNERLORD_NAVMESH_STUDIO\server\web.py" "<module>\SceneObj\<scene>"
 # open http://127.0.0.1:8770
 ```
 
@@ -55,8 +56,9 @@ To use it, register it in the project's MCP config:
 
 ```jsonc
 "bannerlord-navmesh": {
-  "command": "python",
-  "args": ["<BANNERLORD_NAVMESH_STUDIO>/server/mcp_server.py"]
+  "command": "uv",
+  "args": ["run", "--isolated", "--no-project", "--python", "3.12", "--with-requirements",
+           "<skill>/requirements.txt", "<BANNERLORD_NAVMESH_STUDIO>/server/mcp_server.py"]
 }
 ```
 
@@ -96,8 +98,8 @@ Typical flow:
 
 ```powershell
 cd $env:BANNERLORD_NAVMESH_STUDIO
-python tests/test_roundtrip.py     # byte-identical NMG9 re-serialisation
-python tests/test_mcp.py           # MCP tools end-to-end, in-process
+uv run --isolated --no-project --python 3.12 --with-requirements "<skill>\requirements.txt" tests/test_roundtrip.py  # byte-identical NMG9 re-serialisation
+uv run --isolated --no-project --python 3.12 --with-requirements "<skill>\requirements.txt" tests/test_mcp.py        # MCP tools end-to-end, in-process
 ```
 
 `tests/test_web.py` needs the web server running. Ask before you start one.

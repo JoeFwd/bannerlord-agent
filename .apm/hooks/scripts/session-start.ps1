@@ -26,6 +26,8 @@ if (-not $ProjectDir) {
     $ProjectDir = (Resolve-Path (Join-Path $PSScriptRoot '..\..\..')).Path
 }
 $TempDir    = $env:TEMP
+$LogDir     = Join-Path $HOME '.bannerlord-agent\logs'
+New-Item -ItemType Directory -Force -Path $LogDir | Out-Null
 $ToolsDir   = Join-Path $HOME '.dotnet\tools'
 
 function Test-PortReady {
@@ -141,7 +143,7 @@ if (-not (Test-Path $mcpConfigPath)) {
                 Write-Host "BannerlordSearch.Mcp.Server v$v already up on port $port — skipping."
                 continue
             }
-            $log  = Join-Path $TempDir "bannerlord-mcp-server-$v.log"
+            $log  = Join-Path $LogDir "bannerlord-mcp-server-$v.log"
             $env:BANNERLORD_SOURCE_PATH = $contentPaths[$v]
             Start-Process -FilePath $serverExe `
                 -ArgumentList @('--transport', 'streamable-http', '--urls', "http://localhost:$port") `
@@ -165,7 +167,7 @@ if (-not (Test-Path $mcpConfigPath)) {
 # ── 3. JetBrains Debugger Pause Monitor (jb-debug-bridge, :7777) ───────────────
 $bridgePort   = 7777
 $bridgeExe    = Join-Path $ToolsDir 'jetbrains-debugger-pause-monitor.exe'
-$bridgeLog    = Join-Path $TempDir 'jb-debug-bridge.log'
+$bridgeLog    = Join-Path $LogDir 'jb-debug-bridge.log'
 # Same endpoint as the jetbrains-debugger server in .mcp.json. Setting it
 # explicitly also bypasses the per-request project-dir 'jetbrains-mcp-url' lookup.
 $bridgeMcpUrl = if ($env:JETBRAINS_MCP_URL) { $env:JETBRAINS_MCP_URL } else { 'http://127.0.0.1:29202/debugger-mcp/streamable-http' }
@@ -224,10 +226,13 @@ if (Test-PortReady -Port $gabsPort) {
 } elseif (-not $gabsExe -or -not (Test-Path $gabsExe)) {
     Write-Host "WARNING: gabs.exe not found (set GABS_EXE or put gabs on PATH) — game-controller MCP unavailable."
 } else {
-    Write-Host "Starting GABS HTTP server on port $gabsPort ($gabsExe)..."
+    Write-Host "Starting GABS HTTP server on port $gabsPort ($gabsExe), log: $LogDir\gabs.log"
     Get-Process -Name 'gabs' -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue
     Start-Sleep -Seconds 1
-    Start-Process -FilePath $gabsExe -ArgumentList @('server', '--http', "localhost:$gabsPort") -WindowStyle Hidden | Out-Null
+    $gabsLog = Join-Path $LogDir 'gabs.log'
+    Start-Process -FilePath $gabsExe -ArgumentList @('server', '--http', "localhost:$gabsPort") `
+        -RedirectStandardOutput $gabsLog -RedirectStandardError "$gabsLog.err" `
+        -WindowStyle Hidden | Out-Null
     if (Wait-PortReady -Port $gabsPort -Seconds 30) {
         Write-Host "GABS HTTP server ready on port $gabsPort."
     } else {

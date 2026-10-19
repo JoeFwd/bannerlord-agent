@@ -28,15 +28,12 @@ The user has invoked this skill with: $ARGUMENTS
 
 Parse the arguments to extract `--atlas` and `--xml`.
 
-First verify Python 3 and Pillow are available:
+This skill runs Python through uv, so nothing is installed into your Python. Check that uv
+is available:
 ```powershell
-python --version
-python -c "from PIL import Image; print('Pillow OK')"
+uv --version
 ```
-If Pillow is missing, install it:
-```powershell
-pip install Pillow
-```
+If uv is missing, stop and point the user to https://docs.astral.sh/uv/.
 
 Now run the following Python script, substituting real values for ATLAS_PATH and XML_PATH:
 
@@ -134,5 +131,5 @@ for (gy, gx1, gx2) in free_rows[:5]:
     print(f"  Row {gy:2d}  cols {gx1}-{gx2}  ≈ pixel rect ({px_x1},{px_y1})-({px_x2},{px_y2})  width≈{px_x2-px_x1}px")
 ```
 
-Pass the script to Python via PowerShell.
+Write the script to a temp file and run it with `uv run --isolated --no-project --with pillow==12.1.1 <file>`.
 Present the output (grid map, sprite list, free space summary) to the user.

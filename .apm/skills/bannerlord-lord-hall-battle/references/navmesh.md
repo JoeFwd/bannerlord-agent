@@ -16,7 +16,7 @@ assert mesh.serialize() == payload  # in-memory check; does not save the scene
 print(mesh.version, mesh.stats())
 ```
 
-Set `scene_dir` to the resolved target and import from the actual Studio checkout. Use Python's `-B` for a read-only audit. `rnm1.read` unwraps RNM1's LZ4 block; the maintained `nmg9.NavMesh.parse` recognizes decompressed **scene** NMG8 and NMG9. NMG8 uses 20-byte edge records and NMG9 uses 24-byte records. The separate `blnav/nmg8.py` handles a size-prefixed triangle **prefab** format, not these scene files.
+Set `scene_dir` to the resolved target and import from the actual Studio checkout. Run it with the `bannerlord-navmesh-studio` skill's pinned environment and `-B` for a read-only audit: `uv run --isolated --no-project --python 3.12 --with-requirements <navmesh-studio skill>/requirements.txt python -B <script>`. `rnm1.read` unwraps RNM1's LZ4 block; the maintained `nmg9.NavMesh.parse` recognizes decompressed **scene** NMG8 and NMG9. NMG8 uses 20-byte edge records and NMG9 uses 24-byte records. The separate `blnav/nmg8.py` handles a size-prefixed triangle **prefab** format, not these scene files.
 
 The legacy `bannerlord-navmesh` root's `navmesh_scene_bin.py`, `navmesh_bin.py` and early compressed-byte topology probes are superseded exploratory decoders. Do not use their offsets, compression-byte heuristics or health checks to declare scene corruption. If only an old parser exists, use a compatible maintained reader or the official editor; never force an unknown payload through the wrong format.
 

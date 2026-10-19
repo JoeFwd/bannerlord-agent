@@ -26,12 +26,16 @@ See [Install](#install) for the `apm.yml` lines that add this package.
 | Each session start (hook) | `BannerlordSearch.Mcp.Server` 0.2.0, a global .NET tool | `~/.dotnet/tools` |
 | | `BannerlordSearch.Source`, one NuGet package per `bannerlord-search-<version>` server (the game's source, for code search) | `~/.nuget/packages/bannerlordsearch.source/<version>` |
 | | `JetBrainsDebuggerPauseMonitor` 1.0.0, a global .NET tool, plus an `nlog.config` next to it if the package lacks one | `~/.dotnet/tools` |
-| | Background processes: one search server per version (ports 5000+), the pause monitor (7777) and GABS (8080). If port 8080 is not answering, any running `gabs` process is stopped and restarted | logs in `%TEMP%` |
-| First use of `bannerlord-crafting-offsets` or the navmesh skills | A `git clone` of the tool at the commit pinned in `tools.lock.json`, skipped if `BANNERLORD_*` or the `tools/` submodule already provides it. The skill then builds it (`dotnet build`) or installs it (`pip install -e`) | `~/.bannerlord-agent/tools/<name>` |
-| Sprite skills | `pip install Pillow` | your Python environment |
+| | Background processes: one search server per version (ports 5000+), the pause monitor (7777) and GABS (8080). If port 8080 is not answering, any running `gabs` process is stopped and restarted | logs in `~/.bannerlord-agent/logs` |
+| First use of `bannerlord-crafting-offsets` or the navmesh skills | A `git clone` of the tool at the commit pinned in `tools.lock.json`, skipped if `BANNERLORD_*` or the `tools/` submodule already provides it. The crafting skill then builds it (`dotnet build`); the navmesh skills run it through `uv` with the dependencies pinned in the skill (nothing is installed into the checkout) | `~/.bannerlord-agent/tools/<name>` |
+| Sprite and navmesh skills | Pinned PyPI packages (Pillow 12.1.1; the studio's lz4, numpy, fastmcp, fastapi, uvicorn; matplotlib for previews), fetched by `uv run` on first use | uv's cache |
 | `bannerlord-music-classify` | `mcp_local_music_analysis` 0.1.0 and `mcp` 1.30.0 from PyPI, run by `uvx` for the `music-analysis` MCP server (their other dependencies are not pinned). The skill also expects `ffmpeg` on PATH; it does not install it | uv's tool environment |
 
-Nothing else is downloaded. Every version above except Pillow and the music server's indirect dependencies is pinned by the package release,
+Every Python program, including the MCP bridge, runs through `uv run` / `uvx`, so [uv](https://docs.astral.sh/uv/) is the only
+Python prerequisite and nothing is installed into your own Python (uv fetches Python 3.12 itself if
+no suitable one is installed).
+
+Nothing else is downloaded. Every version above except the Python packages' indirect dependencies is pinned by the package release,
 so upgrading the package is the only thing that changes them. APM deploys the hooks without a
 trust prompt (it only gates `bin/` executables, which this package has none of), so the
 session-start hook runs as soon as you open the next session. An existing tool clone is never updated in

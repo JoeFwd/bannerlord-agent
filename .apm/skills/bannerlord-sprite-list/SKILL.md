@@ -22,16 +22,12 @@ The user has invoked this skill with: $ARGUMENTS
 
 Parse the arguments above to extract `--xml` and (optionally) `--filter`.
 
-First check Python is available:
+This skill runs Python through uv, so nothing is installed into your Python. Check that uv
+is available:
 ```powershell
-python --version
+uv --version
 ```
-If Python is not found, stop and tell the user to install Python 3 from https://python.org.
-
-Then check Pillow (needed for consistency with other sprite skills, though this skill only uses stdlib):
-```powershell
-python -c "import xml.etree.ElementTree" 2>&1
-```
+If uv is missing, stop and point the user to https://docs.astral.sh/uv/.
 
 Now run the following Python script via PowerShell, substituting the actual path for XML_PATH and the filter string for FILTER_VALUE (empty string if not provided):
 
@@ -81,5 +77,5 @@ print(sep)
 print(f"Total: {len(parts)} sprite(s)")
 ```
 
-Pass the script to Python via PowerShell, either by writing it to a temp file or by using `python -c`.
+Write the script to a temp file and run it with `uv run --isolated --no-project <file>` (standard library only).
 After running, show the output to the user.

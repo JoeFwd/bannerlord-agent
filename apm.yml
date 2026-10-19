@@ -13,40 +13,55 @@ dependencies:
     - name: bannerlord-search-1_2_12
       registry: false
       transport: stdio
-      command: python
+      command: uv
       args:
+        - run
+        - --isolated
+        - --no-project
         - apm_modules/JoeFwd/bannerlord-agent/.apm/mcp/mcp-http-stdio-bridge.py
         - --url
         - http://localhost:5000
     - name: bannerlord-search-1_3_15
       registry: false
       transport: stdio
-      command: python
+      command: uv
       args:
+        - run
+        - --isolated
+        - --no-project
         - apm_modules/JoeFwd/bannerlord-agent/.apm/mcp/mcp-http-stdio-bridge.py
         - --url
         - http://localhost:5001
     - name: bannerlord-search-1_4_8
       registry: false
       transport: stdio
-      command: python
+      command: uv
       args:
+        - run
+        - --isolated
+        - --no-project
         - apm_modules/JoeFwd/bannerlord-agent/.apm/mcp/mcp-http-stdio-bridge.py
         - --url
         - http://localhost:5002
     - name: bannerlord-game-controller
       registry: false
       transport: stdio
-      command: python
+      command: uv
       args:
+        - run
+        - --isolated
+        - --no-project
         - apm_modules/JoeFwd/bannerlord-agent/.apm/mcp/mcp-http-stdio-bridge.py
         - --url
         - http://localhost:8080/mcp
     - name: jetbrains-debugger
       registry: false
       transport: stdio
-      command: python
+      command: uv
       args:
+        - run
+        - --isolated
+        - --no-project
         - apm_modules/JoeFwd/bannerlord-agent/.apm/mcp/mcp-http-stdio-bridge.py
         - --url
         - http://localhost:29202/debugger-mcp/streamable-http
