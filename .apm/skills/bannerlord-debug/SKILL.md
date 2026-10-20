@@ -17,7 +17,7 @@ description: >
 wrong or already handled once you understand the full picture.
 
 For the mod's layout and feature ownership, read the project's own context skill
-and its Bannerlord agent settings (shipped by the mod's agent package), if any. The
+and its `bannerlord-agent-settings` skill (shipped by the mod's agent package), if any. The
 settings also name project-specific debugging notes and case studies.
 
 For live runtime debugging, read:

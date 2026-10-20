@@ -7,8 +7,8 @@ A mod adds its own context in a separate package that depends on this one.
 ## Quick start
 
 APM (Agent Package Manager) installs agent packages the way npm installs libraries. It copies
-each package's skills, agents, hooks and instructions into your project's `.claude/` and
-`.codex/` folders, and writes `.mcp.json` from the `mcp:` list in `apm.yml`.
+each package's skills, agents and hooks into your project's `.claude/`, `.codex/` and
+`.agents/` folders, and writes `.mcp.json` from the `mcp:` list in `apm.yml`.
 
 ```powershell
 irm https://aka.ms/apm-windows | iex   # install APM once (macOS/Linux: see the APM README)
@@ -39,7 +39,7 @@ Prerequisites: .NET SDK, git and [uv](https://docs.astral.sh/uv/) (all Python ru
 |---|---|
 | `.apm/skills/` | Debugging and tooling skills: `bannerlord-debug`, `bannerlord-gabs-start` / `-session-reset` / `-battle-manager`, `bannerlord-modding-tools`, `bannerlord-crafting-offsets`, `bannerlord-navmesh-studio`, `bannerlord-navmesh-preview`, `bannerlord-lord-hall-battle`, sprite tools, music classification |
 | `.apm/agents/` | `bannerlord-debug-playtester`: a live GABS/Rider verification agent |
-| `.apm/hooks/` | SessionStart (starts the local MCP backends and GABS) and a PreToolUse guard that blocks GABS calls while Rider is paused |
+| `.apm/hooks/` | SessionStart hooks (one starts the local MCP backends and GABS, one prints `context/bannerlord-agent.md` as always-on context) and a PreToolUse guard that blocks GABS calls while Rider is paused |
 | `.apm/mcp/mcp-http-stdio-bridge.py` | A stdio-to-HTTP MCP bridge for the local servers |
 | `brain/` | The knowledge base: one lesson per note, Obsidian wikilinks. Start at `brain/INDEX.md` |
 
@@ -75,7 +75,7 @@ In your mod's agent package (or directly in the mod repo's `apm.yml`):
 ```yaml
 dependencies:
   apm:
-    - JoeFwd/bannerlord-agent#v0.1.9
+    - JoeFwd/bannerlord-agent#v0.2.0
 ```
 
 That is all. `apm install` writes these MCP servers into `.mcp.json`:
@@ -127,10 +127,22 @@ and check that they agree before tagging:
 ./scripts/resolve-tool.ps1 -Check
 ```
 
+## Always-on context
+
+The package ships no APM instructions. Codex never installs per-file instructions, and
+`apm compile` (which would fold them into `AGENTS.md`) skips any dependency folder that
+contains `.git`. Instead, a SessionStart hook prints `.apm/hooks/context/bannerlord-agent.md`;
+both Claude Code and Codex add a SessionStart hook's stdout to the model's context. A mod layer
+does the same with its own context file.
+
+Codex runs a hook only after you trust it. After `apm install` changes `.codex/hooks.json`,
+open Codex in the project and approve the hooks with `/hooks`. Until then, Codex skips them
+silently.
+
 ## Project settings
 
-Mod-specific values are shipped by the mod's package as a "Bannerlord agent settings"
-instruction. These values are:
+The mod's package ships the mod-specific values as a skill named `bannerlord-agent-settings`.
+The generic skills and the playtester agent load it by that name. It holds:
 - the Rider `project_path`
 - the log file
 - the new-game option

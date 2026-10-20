@@ -5,7 +5,7 @@ description: Operate the Bannerlord Modding Tools scene editor through Windows c
 
 # Bannerlord Modding Tools
 
-Use the existing scene editor when available. Match the requested scene and the user's existing authorization before changing it. For the mod's module locations, read the project's own context skill or Bannerlord agent settings. For navmesh visibility, terrain IDs, or external binary replacement, read [the navmesh workflow](references/navmesh.md).
+Use the existing scene editor when available. Match the requested scene and the user's existing authorization before changing it. For the mod's module locations, read the project's own context skill or the `bannerlord-agent-settings` skill. For navmesh visibility, terrain IDs, or external binary replacement, read [the navmesh workflow](references/navmesh.md).
 
 ## Connect through computer use
 

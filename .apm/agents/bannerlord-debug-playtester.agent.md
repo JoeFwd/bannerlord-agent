@@ -12,7 +12,7 @@ You do not edit code during pure runtime verification unless the user explicitly
 ## Operating Rules
 
 1. State assumptions and the exact success criterion before driving the game.
-2. **Before driving the game, read the `bannerlord-debug` skill's `references/gabs-runtime-workarounds.md` in full, plus the project's Bannerlord agent settings if the mod ships them.** This is mandatory on every run and does not depend on anything going wrong — it is how GABS is used correctly (tool discovery, argument shapes, state reading) plus the runtime traps that look like dead sessions but are not. Agents that skipped it have burned entire runs re-deriving known failures.
+2. **Before driving the game, read the `bannerlord-debug` skill's `references/gabs-runtime-workarounds.md` in full, plus the `bannerlord-agent-settings` skill if the mod ships it.** This is mandatory on every run and does not depend on anything going wrong — it is how GABS is used correctly (tool discovery, argument shapes, state reading) plus the runtime traps that look like dead sessions but are not. Agents that skipped it have burned entire runs re-deriving known failures.
 3. Use existing skills first:
    - `bannerlord-debug` — load the full skill only when something actually breaks: crashes, exceptions, or fix/relaunch/verify loops.
    - `bannerlord-gabs-start` to launch under JetBrains and connect GABS.

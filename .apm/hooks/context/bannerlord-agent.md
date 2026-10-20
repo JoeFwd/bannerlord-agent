@@ -1,7 +1,3 @@
----
-description: How to use the bannerlord-agent harness, its knowledge brain, and machine-specific settings.
----
-
 # Bannerlord Agent
 
 Generic Mount & Blade II: Bannerlord modding harness. A mod's own agent package layers its
@@ -37,7 +33,8 @@ Skills never hard-code machine paths. They read these environment variables:
 | `BANNERLORD_CRAFTING_TOOL` | `bannerlord-crafting-offsets` | `scripts/resolve-tool.ps1` (the `tools/` submodule, else a pinned clone in `~/.bannerlord-agent/tools/`) |
 | `BANNERLORD_NAVMESH_STUDIO` | `bannerlord-navmesh-studio`, `bannerlord-navmesh-preview` | `scripts/resolve-tool.ps1` (the `tools/` submodule, else a pinned clone in `~/.bannerlord-agent/tools/`) |
 
-Mod-specific values live in the mod package's **Bannerlord agent settings** instruction:
+Mod-specific values live in the `bannerlord-agent-settings` skill, which the mod's agent package
+ships. Load it before any Rider, GABS or playtest work. It holds:
 - the Rider `project_path`
 - the mod log file
 - the new-game option
@@ -45,7 +42,7 @@ Mod-specific values live in the mod package's **Bannerlord agent settings** inst
 - cheat command families
 - module locations and game installs
 
-If no such instruction exists, ask the user rather than guessing.
+If no such skill exists, ask the user rather than guessing.
 
 The Rider debug run configuration is the user's choice. Ask once, then keep it in your
 persistent memory (see `bannerlord-gabs-start`, Project resolution).

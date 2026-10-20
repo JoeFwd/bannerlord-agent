@@ -1,0 +1,12 @@
+{
+  "SessionStart": [
+    {
+      "hooks": [
+        {
+          "type": "command",
+          "command": "pwsh -NoProfile -Command '[Console]::OutputEncoding = [Text.Encoding]::UTF8; Get-Content -Raw -Encoding utf8 \"${PLUGIN_ROOT}/.apm/hooks/context/bannerlord-agent.md\"'"
+        }
+      ]
+    }
+  ]
+}

@@ -33,7 +33,7 @@ Port and token come from the debug profile in the mod's `launchSettings.json`. A
 
 ## JetBrains Debug Configuration
 
-`project_path` comes from the project's Bannerlord agent settings, and the run configuration
+`project_path` comes from the `bannerlord-agent-settings` skill, and the run configuration
 is the user's remembered choice (see the `bannerlord-gabs-start` skill's Project resolution).
 
 Pass that `project_path` on **every** JetBrains MCP call. Keep any literal `&` (as in

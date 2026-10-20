@@ -38,7 +38,7 @@ If any of these is missing, stop and tell the user instead of working around it:
 ## Project resolution
 
 `project_path` is the folder Rider opened, per game version when ARGUMENTS names one. Take
-it from the project's Bannerlord agent settings (an instructions/rules file shipped by the
+it from the `bannerlord-agent-settings` skill (shipped by the
 mod's own agent package); without settings, use the project folder holding `apm.yml`. Write
 it with forward slashes.
 
