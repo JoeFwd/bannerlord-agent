@@ -1,5 +1,5 @@
 name: bannerlord-agent
-version: 0.1.7
+version: 0.1.8
 description: "Generic Mount & Blade II Bannerlord modding harness: debugging skills (GABS/GABP, Rider), modding-tool skills, hooks, MCP bridge and a shared knowledge brain."
 type: hybrid
 targets:
