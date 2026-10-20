@@ -86,6 +86,7 @@ One durable lesson per note. Grep `**/*.md` for a symptom, API or file name; bro
 
 - [[cdb-native-av-capture-method]] (howto): How to capture and read a native access violation in TaleWorlds.Native using cdbX64 without Rider, including the non-invasive sampling variant.
 - [[clr-exception-breakpoints-needed-to-catch-silent-death]] (howto): Without CLR exception breakpoints a managed crash in Bannerlord leaves no dump and no log; set them (and a stop-on-first-chance AV capture for native faults).
+- [[dead-game-looks-like-unhit-breakpoint]] (lesson): A dead game looks exactly like a breakpoint that has not fired; poll Get-Process/games_status/debug session at least every 60s during any wait, and collect death evidence once the process is gone.
 - [[debugger-pause-kills-gabp-game]] (lesson): Pausing Bannerlord in a JetBrains debugger for more than ~30s while GABS is connected makes the game exit silently on resume; GABS also deletes bridge.json on disconnect
 - [[evaluate-in-debugger-without-freezing-the-game]] (lesson): Never put logging breakpoints (or {this} log messages) on per-frame paths; let the battle run, then take snapshots from a throttled once-per-second main-thread anchor and check Mission.Current.CurrentTime advanced
 - [[gabs-load-save-forbidden]] (lesson): Never use the GABS core/load_save tool - from a running campaign it hung the loading screen forever; load saves through the in-game Load Game menu
