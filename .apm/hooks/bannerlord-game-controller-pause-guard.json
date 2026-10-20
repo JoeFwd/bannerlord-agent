@@ -1,7 +1,7 @@
 {
   "PreToolUse": [
     {
-      "matcher": "mcp__bannerlord-game-controller__",
+      "matcher": "mcp__bannerlord-game-controller__.*",
       "hooks": [
         {
           "type": "command",
