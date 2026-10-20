@@ -37,16 +37,26 @@ If any of these is missing, stop and tell the user instead of working around it:
 
 ## Project resolution
 
-Take these from the project's Bannerlord agent settings (an instructions/rules file
-shipped by the mod's own agent package):
+`project_path` is the folder Rider opened, per game version when ARGUMENTS names one. Take
+it from the project's Bannerlord agent settings (an instructions/rules file shipped by the
+mod's own agent package); without settings, use the project folder holding `apm.yml`. Write
+it with forward slashes.
 
-- the JetBrains debug run configuration name (Step 3)
-- `project_path` — the folder Rider opened, per game version when ARGUMENTS names one
+The debug run configuration (Step 3) is the user's choice, not the package's:
+1. Candidates are the launch profiles in `**/Properties/launchSettings.json` that set
+   `GABP_SERVER_PORT` and load `Bannerlord.GABS`. Match them to the names
+   `list_run_configurations` returns; only those names launch.
+2. If the user named a configuration in this request, use it.
+3. Else, if your persistent memory holds the user's chosen configuration and it is still a
+   candidate, use it.
+4. Else, if exactly one candidate exists, use it.
+5. Else ask the user which one to use, listing each candidate with what sets it apart (for
+   example extra modules such as `NavalDLC`). Save the answer to your persistent memory, so
+   later sessions don't ask again. A subagent can't ask: it uses the configuration its brief
+   names, or stops and reports the candidates.
 
-If there are no settings, `project_path` is the project folder holding `apm.yml`,
-and the run configuration is the launch profile in `**/Properties/launchSettings.json`
-that loads `Bannerlord.GABS`; ask the user if several match. Write `project_path` with
-forward slashes. All other steps are version-independent.
+Read the `GABP_*` values for Step 2 from the chosen profile. All other steps are
+version-independent.
 
 ---
 

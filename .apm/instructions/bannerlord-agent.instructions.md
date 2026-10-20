@@ -38,7 +38,7 @@ Skills never hard-code machine paths. They read these environment variables:
 | `BANNERLORD_NAVMESH_STUDIO` | `bannerlord-navmesh-studio`, `bannerlord-navmesh-preview` | `scripts/resolve-tool.ps1` (the `tools/` submodule, else a pinned clone in `~/.bannerlord-agent/tools/`) |
 
 Mod-specific values live in the mod package's **Bannerlord agent settings** instruction:
-- the Rider debug configuration name and `project_path`
+- the Rider `project_path`
 - the mod log file
 - the new-game option
 - a safe evaluation-breakpoint anchor
@@ -46,3 +46,6 @@ Mod-specific values live in the mod package's **Bannerlord agent settings** inst
 - module locations and game installs
 
 If no such instruction exists, ask the user rather than guessing.
+
+The Rider debug run configuration is the user's choice. Ask once, then keep it in your
+persistent memory (see `bannerlord-gabs-start`, Project resolution).

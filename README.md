@@ -131,12 +131,15 @@ and check that they agree before tagging:
 
 Mod-specific values are shipped by the mod's package as a "Bannerlord agent settings"
 instruction. These values are:
-- the Rider debug configuration and `project_path`
+- the Rider `project_path`
 - the log file
 - the new-game option
 - the evaluation-breakpoint anchor
 - the cheat commands
 - the module and install locations
+
+The Rider run configuration is not a package setting: `bannerlord-gabs-start` asks the user
+once, when several launch profiles qualify, and keeps the answer in the agent's memory.
 
 ## Brain
 
