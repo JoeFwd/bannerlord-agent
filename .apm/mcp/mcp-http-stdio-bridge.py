@@ -54,7 +54,9 @@ def parse_sse(body: str) -> list[Any]:
     return messages
 
 
-def http_roundtrip(url: str, message: Any, session_id: str | None) -> tuple[list[Any], str | None]:
+def http_roundtrip(
+    url: str, message: Any, session_id: str | None, timeout: float
+) -> tuple[list[Any], str | None]:
     payload = json.dumps(message, separators=(",", ":")).encode("utf-8")
     headers = {
         "Accept": "application/json, text/event-stream",
@@ -66,7 +68,7 @@ def http_roundtrip(url: str, message: Any, session_id: str | None) -> tuple[list
 
     request = urllib.request.Request(url, data=payload, headers=headers, method="POST")
     try:
-        with urllib.request.urlopen(request, timeout=None) as response:
+        with urllib.request.urlopen(request, timeout=timeout) as response:
             new_session_id = response.headers.get("Mcp-Session-Id") or session_id
             status = response.status
             content_type = response.headers.get("Content-Type", "")
@@ -119,6 +121,14 @@ def main() -> int:
         action="store_true",
         help="Do not retain or send MCP session identifiers between requests",
     )
+    # Requests are relayed one at a time, so a request the server never answers (for example a
+    # wait for a breakpoint in a game that has died) would block every later call forever.
+    parser.add_argument(
+        "--timeout",
+        type=float,
+        default=900.0,
+        help="Seconds to wait for each HTTP response before failing the request (default 900)",
+    )
     args = parser.parse_args()
 
     session_id: str | None = None
@@ -134,7 +144,7 @@ def main() -> int:
             if isinstance(message, dict):
                 request_id = message.get("id")
 
-            responses, next_session_id = http_roundtrip(args.url, message, session_id)
+            responses, next_session_id = http_roundtrip(args.url, message, session_id, args.timeout)
             session_id = None if args.stateless else next_session_id
             if is_notification(message):
                 continue
