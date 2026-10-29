@@ -75,7 +75,7 @@ In your mod's agent package (or directly in the mod repo's `apm.yml`):
 ```yaml
 dependencies:
   apm:
-    - JoeFwd/bannerlord-agent#v0.2.0
+    - JoeFwd/bannerlord-agent#v0.2.1
 ```
 
 That is all. `apm install` writes these MCP servers into `.mcp.json`:
