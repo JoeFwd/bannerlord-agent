@@ -49,6 +49,7 @@ One durable lesson per note. Grep `**/*.md` for a symptom, API or file name; bro
 - [[settlement-scene-binding-by-wall-level]] (reference): Settlement to scene binding via Location scene_name / scene_name_1..3, selected by wall level, falling back to the first.
 - [[settlement-shell-prefab-structure-rules]] (lesson): Town/castle prefab shells have a functional subtree (gates, siege anchors, breach) that must not be scaled, retagged or reordered.
 - [[siege-vanilla-1-4-facts]] (reference): 1.4 SiegeEvent.Tick makes illegitimate besiegers leave, and ChangeOwnerOfSettlementAction destroys the garrison on BySiege.
+- [[campaign-settlement-height-from-terrain-raycast]] (lesson): Campaign-map settlement entities take their Z from a physics raycast on the terrain (Scene.GetHeightAtPoint), not the navmesh; a settlement over terrain below water_level floats, fix by raising the heightmap
 
 ## coop-multiplayer
 
@@ -236,3 +237,4 @@ One durable lesson per note. Grep `**/*.md` for a symptom, API or file name; bro
 - [[authored-genealogy-cycles-overflow-the-stack]] (incident): A hero listed as his own father in authored XML makes any recursive ancestry walk recurse until a StackOverflow, which .NET cannot catch.
 - [[bannerlord-xml-load-abort-semantics]] (reference): MBObjectManager.LoadXml has no try/catch - one bad node silently kills every object after it in the merged document; classic cause of cascading NREs
 - [[reused-culture-needs-complete-data]] (lesson): Reusing a vanilla culture id for new content crashes in kingdom init, hero creation and patrol spawning when the culture lacks policies, notable templates or patrol templates.
+- [[character-creation-roster-needs-horse]] (lesson): Character creation's age-menu flow dereferences the selected equipment roster's Horse and HorseHarness, so every battle set a culture's character creation can pick needs both

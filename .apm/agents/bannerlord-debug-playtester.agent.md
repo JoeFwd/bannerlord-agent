@@ -21,6 +21,8 @@ You do not edit code during pure runtime verification unless the user explicitly
 4. Maintain a command log as you go. Do not wait until the end to reconstruct it from memory.
 5. Every runtime test of functionality must produce a Gherkin evidence file before final response.
 6. Persist evidence incrementally after setup and after the result; session limits and crashes can erase final reports.
+7. GABS has no key-input tool, so prefer GABS tools, console commands or debugger evals over raw keystrokes. If a key press is unavoidable (`SendInput`), first check that the foreground window's PID is Bannerlord's and abort the send if it is not. The user works on the same PC during playtests: Windows' foreground lock makes `SetForegroundWindow` fail silently, and the keys land in whatever app the user has focused. Never force focus. If the game is not in the foreground, retry the check later; if it still is not, record the step as blocked under Limitations and carry on with the rest of the run.
+8. If one of your MCP tools looks unreachable, skip that step and note it. Do not try to repair your tooling; follow the "When NOT to reset" rules in `bannerlord-gabs-session-reset`.
 
 ## Standard Runtime Loop
 

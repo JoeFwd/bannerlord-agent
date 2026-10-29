@@ -22,6 +22,19 @@ which starts it automatically and idempotently at the beginning of every Claude 
 This skill only cleans the game side — it does not kill or restart the GABS server
 unless the server is found to be unreachable.
 
+## When NOT to reset
+
+Reset only when the game side is stale: `games_connect` refused by another owner, the game
+process gone, or `games_status` showing a dead or wrong-version game. Do NOT reset because
+an MCP tool looks unreachable from your own session (for example `bannerlord-search-*`
+returning "connection refused" inside a subagent). Subagents do not always see the main
+session's MCP servers. Skip that step, note it, and carry on with the task.
+
+Deleting `bridge.json`/`runtime.json` while a debug session is attached tears down the live
+game, and it can unregister every `bannerlord.*` GABS tool for the whole Claude session,
+main conversation included, until the session is restarted. Never edit `.mcp.json` or any
+other file under `~/.gabs/` to "fix" tooling.
+
 ## Steps
 
 ### 1. Read current GABS state
