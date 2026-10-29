@@ -1,11 +1,14 @@
 ---
 name: bannerlord-navmesh-studio
 description: >
-  Bannerlord Navmesh Studio: a Python library, web GUI and MCP server that reads and
-  writes scene navmesh.bin (RNM1/NMG9) and navmesh prefabs (NMG8), reads terrain.bin (ZGR6),
-  and documents the terrain_ed.bin container (OK01). Use it when inspecting, validating, generating or
-  hand-editing a scene or campaign-map navmesh, sampling terrain heights, checking g5
-  scene-level masks, or placing settlements on a campaign map navmesh.
+  The Bannerlord Scene Studio (BannerlordSceneStudio repo, also called the navmesh studio):
+  the go-to tool for any question about WHERE something sits on a scene or campaign map.
+  It is a Python library, a web GUI (port 8770) and an MCP server that read terrain.bin (ZGR6)
+  and read/write navmesh.bin (RNM1/NMG9) and navmesh prefabs (NMG8). Use it before writing
+  ad-hoc parsers, whenever you need to: find what face type is at a map position (land, river,
+  coastal sea, open sea, mountain, lake); pick or check settlement, gate, port or War Sails
+  blockade positions; check a point is on a reachable navmesh face; sample terrain height;
+  inspect, validate, generate or hand-edit a navmesh; or decode g5 scene-level masks.
 ---
 
 # Bannerlord Navmesh Studio

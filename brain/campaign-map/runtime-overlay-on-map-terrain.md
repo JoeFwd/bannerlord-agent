@@ -26,6 +26,9 @@ The working recipe for a runtime-coloured, translucent overlay draped over the m
 - **Build cost is quadratic in a single mesh's triangle count.** 2k triangles took 72 ms,
   8k took 1042 ms, and 131k froze the game for minutes. Split the geometry into meshes of at most
   about 512 triangles: 131k triangles in 256 meshes builds in 1.17 s, about 9 µs per triangle.
+  The build runs synchronously and freezes the game for that time. Rendering costs nothing
+  noticeable: 131k translucent triangles over the map left the FPS unchanged. So build at load,
+  and spread incremental rebuilds over several ticks.
 - **Map decals never render runtime textures.** `CreateFromByteArray`, `CreateFromMemory`,
   always-valid + preload and `Decal.CheckAndRegisterToDecalSet()` all fail; decals sample only the
   compiled decal atlas. Stock atlas textures tinted with `SetFactor1` do work
