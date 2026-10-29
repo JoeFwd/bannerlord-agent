@@ -5,7 +5,7 @@ type: lesson
 topic: war-sails-naval
 tags: [war-sails, navmesh, nmg9, g3, boarding, shipattachmentmachine, checkattachednavmeshsanityaux]
 sources: [memory/ws-ship-navmesh-boarding-face-rules.md]
-updated: 2026-10-18
+updated: 2026-10-23
 ---
 
 # Ship navmesh boarding-face rules
@@ -21,4 +21,11 @@ NavalDLC `MissionShip.CheckAttachedNavmeshSanityAux` enforces on a ship's NavMes
 
 **How to apply:** rerun the check after ANY navmesh regeneration by authoring scripts; regeneration reintroduces the split. Check with a navmesh dump tool that lists faces per id (`.bin` = u32 size + NMG9).
 
-Related: [[navmesh-faces-must-be-tris-or-quads]], [[ws-climber-yaw-convention]]
+**General rules for a hand-built ship navmesh** (from the DADG kogge/carrack rebuild, 2026-10-23):
+- File: a u32 size prefix, then an NMG9 payload.
+- Faces: CCW seen from above, with g1=2 and g5=−1. Tris and quads only.
+- Topology: the mesh must be **conforming**. No T-junctions; each shared edge uses the same two vertex indices.
+- Placement: every attachment machine's origin lies on its g3 face, and every spawn point lies on some face.
+- Height: deck faces must match the collision agents stand on. For stairs, see [[ws-ship-deck-stairs-need-collision]].
+
+Related: [[navmesh-faces-must-be-tris-or-quads]], [[ws-climber-yaw-convention]], [[ws-ship-deck-stairs-need-collision]]

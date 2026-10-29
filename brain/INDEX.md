@@ -35,6 +35,7 @@ One durable lesson per note. Grep `**/*.md` for a symptom, API or file name; bro
 
 - [[campaign-model-seams-for-encounters-and-access]] (reference): Public GameModel overrides that let a mod change encounters, settlement access and army creation without Harmony.
 - [[clan-createclan-cadet-spinoff-recipe]] (howto): How to spin a runtime clan off an existing clan in 1.4: Clan.CreateClan, set leader, move the hero, and join the parent kingdom.
+- [[runtime-overlay-on-map-terrain]] (lesson): Paint runtime colours over map terrain with small vertex-coloured meshes on vertex_color_mat; decals reject runtime textures and AddTriangle cost is quadratic in mesh size.
 - [[herokilled-event-and-clan-leader-handover-race]] (lesson): On a hero death, vanilla's ChangeClanLeaderAction and your HeroKilledEvent handler run in unspecified order; never read Clan.Leader to find an heir.
 - [[kingdom-decision-lifecycle]] (reference): How KingdomDecision objects are enqueued, cancelled and resolved, so a mod can add its own decision type.
 - [[main-map-override-last-module-wins]] (reference): SandBox.MapScene.GetMainMapModule picks the last active module containing SceneObj/Main_map/scene.xscene.
@@ -78,6 +79,7 @@ One durable lesson per note. Grep `**/*.md` for a symptom, API or file name; bro
 
 ## engine-runtime
 
+- [[actionindexcache-resolves-eagerly]] (lesson): ActionIndexCache.Create resolves the action index immediately and for good; a static field initialised during module load caches -1 because action types are read later
 - [[bannerlord-live-version]] (reference): Identify the installed game version from bin/Win64_Shipping_Client/Version.xml, not DLL metadata or ButterLib's log; verify APIs against shipped DLLs (install was v1.4.8 build 119303 on 2026-08-17)
 - [[campaign-perf-measurement-method]] (howto): Howto - measure campaign-map frame cost with a temporary Harmony Stopwatch probe loaded through the debugger, and the pitfalls (inclusive times, warmup, drift, unmatched baselines).
 - [[setphysicsstate-is-visibility-coupled]] (lesson): GameEntity.SetPhysicsState(false) hides the entity as well as disabling its rigid body - the native call drives both, and the managed override is empty so C# reading cannot reveal it
@@ -88,6 +90,7 @@ One durable lesson per note. Grep `**/*.md` for a symptom, API or file name; bro
 - [[clr-exception-breakpoints-needed-to-catch-silent-death]] (howto): Without CLR exception breakpoints a managed crash in Bannerlord leaves no dump and no log; set them (and a stop-on-first-chance AV capture for native faults).
 - [[dead-game-looks-like-unhit-breakpoint]] (lesson): A dead game looks exactly like a breakpoint that has not fired; poll Get-Process/games_status/debug session at least every 60s during any wait, and collect death evidence once the process is gone.
 - [[debugger-pause-kills-gabp-game]] (lesson): Pausing Bannerlord in a JetBrains debugger for more than ~30s while GABS is connected makes the game exit silently on resume; GABS also deletes bridge.json on disconnect
+- [[rider-hot-reload-edits-running-game]] (lesson): Saving a .cs file during a Rider debug session hot-reloads it into the live game; state left by the old code (caches, array sizes) can make the new code throw and kill the session.
 - [[evaluate-in-debugger-without-freezing-the-game]] (lesson): Never put logging breakpoints (or {this} log messages) on per-frame paths; let the battle run, then take snapshots from a throttled once-per-second main-thread anchor and check Mission.Current.CurrentTime advanced
 - [[gabs-load-save-forbidden]] (lesson): Never use the GABS core/load_save tool - from a running campaign it hung the loading screen forever; load saves through the in-game Load Game menu
 - [[gabs-on-1-4-7]] (howto): GABS/GABP works on Bannerlord 1.4.7 with the stock v1.3.13 DLL once MCM and UIExtenderEx are installed and module order is right; old per-version path tables are outdated
@@ -108,6 +111,7 @@ One durable lesson per note. Grep `**/*.md` for a symptom, API or file name; bro
 - [[blender-fbx-roundtrip-breaks-scale]] (lesson): Blender FBX export silently rescales Bannerlord meshes 100x in game unless apply_scale_options is FBX_SCALE_ALL/UNITS; the importer applies Lcl Scaling and ignores UnitScaleFactor; audit/render tools cannot detect either failure
 - [[cannonball-pile-white-is-ao-coef]] (lesson): Washed-out white spheres on a stone_pile_deformer material trace to the Ambient Occlusion Coef, not the diffuse/specular textures
 - [[fbx-edits-need-tpac-reimport]] (lesson): Editing a source FBX changes tool renders at once but the game loads the compiled _geo.tpac - re-import through the Modding Kit before trusting in-game results; shipped tpacs can be mirrored vs their FBX
+- [[fbx-import-root-package-path-error]] (lesson): Modding Kit refused a NEW FBX at the AssetSources root ("Package path must contain /Assets/ element"); the same FBX in an AssetSources subfolder imported fine
 - [[fbx-reexport-must-preserve-material-names]] (incident): A Blender FBX re-export renamed materials (wood -> wood.001); restore exact material names and slot mapping or the compiled asset changes.
 - [[invisible-mesh-is-scale-not-shader]] (lesson): A mesh that renders in the modding tool but is invisible in game is usually millimetre-scale; measure the compiled tpac bbox (LZ4-compressed geometry) first, and fix via meta_mesh_component scale
 - [[material-without-use-specular-looks-matte]] (lesson): A material whose saved flags omit use_specular samples no specular map, so identical textures still look matte; metallic versus standard workflow also changes reflection.
@@ -216,12 +220,16 @@ One durable lesson per note. Grep `**/*.md` for a symptom, API or file name; bro
 - [[war-sails-sail-cloth-requirements]] (howto): Sail cloth works only when the sail has saved Cloth Editor settings and the mission sail has a banner child; values and shortcuts that were verified.
 - [[warsails-main-map-migration-contract]] (reference): What a campaign map needs for War Sails/NavalDLC (v1.2.8): terrain ids, ports, bridges, water plane, caches, blockade and pirate setup.
 - [[ws-climber-yaw-convention]] (reference): War Sails rope climbers face local X (yaw 0 starboard / pi port, climb_point at local -x, inboard); using +-pi/2 stands the ropes edge-on to the hull
-- [[ws-fmod-sail-sound-hang]] (incident): UNRESOLVED - War Sails sea-battle hang with FMOD Studio update thread spinning and the game thread blocked in MissionSail.UpdateSoundPos; intermittent, not music, not camera churn; a Rider pause looks identical
+- [[ws-fmod-sail-sound-hang]] (incident): RESOLVED - War Sails sea-battle FMOD hang is hook_grab one-shot spam (~350/s) when a mod strips NavalDLC's "hook" item, leaving ShipAttachmentMachine._hookItem null; not a vanilla FMOD or sail bug
 - [[ws-movement-set-swim-dive-slots-must-be-defined]] (incident): A movement set with swimming/diving action slots = -1 makes the native action lookup read off the table and crash the main tick when an agent enters diving mode.
 - [[ws-naval-quirks]] (reference): Smaller War Sails facts: cheat mission needs imperial troops, grappled ships fold sails, sail toggle key, port screen figurehead tooltip NRE, hull XSD warnings.
+- [[ws-one-siege-weapon-per-ship]] (lesson): MissionShip supports exactly one ranged siege weapon - InitializeLists keeps the LAST RangedSiegeWeapon found; crewing, ammo, raid-disable and direct control all use it
 - [[ws-sail-cloth-params-frozen]] (lesson): FIXED 2026-10-02 - sail cloth meshes keep importer-default cloth params (anchor 1, wind 1, damping 0.95) so the cloth is near-rigid; vanilla square_sail_a uses anchor 0, wind 15, damping 0.2; a fresh FBX import has no cloth settings at all
 - [[ws-sail-vertex-paint-pins]] (lesson): Cloth pinning lives in per-vertex colour - alpha 0 pins, blue 0 marks the border ring; sails with only the top pinned fly up like flags in wind. TpacTool prints Color as BGRA
-- [[ws-ship-navmesh-boarding-face-rules]] (lesson): NavalDLC ship navmesh boarding ids (NMG9 g3, 1..50) must each be on exactly ONE face with at least one unshared edge, and every attachment machine must sit inside the face with its id; split quads are suspected of a native AV in boarding melee
+- [[ws-ship-ballista-prefab-requirements]] (reference): Entity tree a Ballista/ShipBallista needs (navel, body, skeleton, projectile tagged MissileItemID, leaving-position sibling, Pilot, camera, targeting), axis conventions, hardcoded sounds and damage path
+- [[ws-ship-deck-stairs-need-collision]] (lesson): A ship navmesh ramp to a raised deck needs physics-only bo_editor_cube treads (unit box, z 0..1) under it or agents fall through or stall
+- [[ws-ship-navmesh-boarding-face-rules]] (lesson): NavalDLC ship navmesh boarding ids (NMG9 g3, 1..50) must each be on exactly ONE face with at least one unshared edge, and every attachment machine must sit inside the face with its id; split quads are suspected of a native AV in boarding melee; plus general hand-built ship navmesh conformity rules
+- [[ws-ship-upgrade-slot-mechanism]] (reference): How War Sails turns hull slots into prefab children - upgrade_slot tag + hull tag_id key + slot_prefab_child_id, base/platform, XML load ids, culture and AI upgrade rules
 
 ## xml-data
 
