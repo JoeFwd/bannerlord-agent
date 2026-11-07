@@ -61,6 +61,7 @@ One durable lesson per note. Grep `**/*.md` for a symptom, API or file name; bro
 
 - [[blade-mesh-origin-inflates-reach]] (lesson): Bannerlord crafted-weapon reach is computed from XML lengths/offsets, not mesh bounds - an off-origin blade mesh silently overstates reach
 - [[crafted-weapon-stats-driven-by-weaponflags]] (reference): Bannerlord crafted-weapon speed/damage branch on WeaponDescription WeaponFlags, never on weapon_class; WideGrip without NotUsableWithOneHand is a data trap
+- [[crafted-weapons-ignore-tier-override]] (lesson): items.xml tier_override="N" pins the shown tier (and price) of hand-authored items only; crafted weapons get tier from the ItemValueModel, so retier them with an ItemValueModel decorator. Vanilla armour tier saturates at 6
 - [[crafting-connector-offset-normalization-method]] (howto): Method for normalising crafting piece connectors across a template: seam sign, scale-weighted cancellation, fallback by removing UsablePieces.
 - [[crafting-contact-profile-check]] (howto): Acceptance test for a Bannerlord blade/guard joint is the per-column contact percentage across the blade's base width, calibrated against healthy swords (88-100% @ 0.11-0.15 median gap)
 - [[crafting-joint-gap-formula]] (lesson): Bannerlord crafting joint-gap formula, why mesh bounds/seam gaps lie about visible blade-guard gaps, and how to decide which piece owns an offset error
@@ -71,6 +72,7 @@ One durable lesson per note. Grep `**/*.md` for a symptom, API or file name; bro
 - [[crafting-usage-vs-bench-list-rules]] (reference): Bannerlord crafting - UsablePieces drives the bench list, AvailablePieces drives which weapon usage is emitted; the two are independent, and saves bake in the design
 - [[handle-length-drives-both-joints]] (lesson): A Handle's declared length moves the pommel AND guard attach points symmetrically (+/-length/2 about pivot), so length cannot fix one joint without breaking the other - use previous_piece_offset
 - [[handle-piece-offset-semantics]] (lesson): For a shaft mesh centred on its origin, hand_to_bottom = length/2 - piece_offset; piece_offset == length/2 puts the hand on the butt and shoves the weapon forward
+- [[head-armour-sums-all-slots]] (lesson): Agent ArmorHead (used for Head AND Neck hits) = Equipment.GetHeadArmorSum, which adds head_armor from every armour slot including Cape - bevors/gorgets authored as capes raise head armour
 - [[precrafted-item-piece-must-be-in-template-usable-pieces]] (lesson): A pre-crafted item whose piece was removed from the template UsablePieces crashes CraftingOrder.InitializeCraftingOrderOnLoad at campaign start, not at the smithy.
 - [[scabbard-anchored-to-blade-pivot]] (lesson): The holster follows the Blade pivot, so a blade seated too deep in the guard drags the scabbard over the cross; reseat by splitting distance_to_previous/next_piece (zero stat change), and never aim for seam == 0
 - [[scabbard-holster-mesh-placement]] (reference): A crafted weapon's scabbard is the Blade piece's BladeData holster_mesh, placed at the Blade's own pivot (PiecePivotDistances[0]); two template flags suppress it; body placement and the quiver skeleton branch are unmodellable offline
@@ -121,9 +123,11 @@ One durable lesson per note. Grep `**/*.md` for a symptom, API or file name; bro
 
 ## missions-battles
 
+- [[agent-apply-damage-model-decorator]] (lesson): AgentApplyDamageModel.CalculateDamage is non-virtual but dispatches every step through MissionGameModels.Current, so a decorator added with AddModel can override ApplyGeneralDamageModifiers etc. - no Harmony patch needed
 - [[formation-detachments-includes-strategicareas]] (lesson): Formation.Detachments is not a machine list - ArrangementOrder.TickOccasionally keeps joining every StrategicArea near the formation's OrderPosition, so sizing a crew pool off Detachments.Count runs away
 - [[formation-transferunits-selective-pop-uses-stale-orderposition]] (lesson): Formation.TransferUnits with useSelectivePop pops the units nearest the TARGET formation's OrderPosition, and an empty target's order position is stale-copied from the source on first transfer
 - [[lordshall-defender-slots-filtered-by-navmesh]] (reference): In the lord's-hall siege mission, archer spawn helpers are kept only if on an enabled navmesh face, and SpawnTroops dereferences the chosen slot with no null check.
+- [[vanilla-blow-damage-formula]] (reference): DefaultStrikeMagnitudeModel.ComputeRawDamage - 50/(50+armour) scaling plus a flat armour subtraction per damage type (cut 0.5, pierce 0.33, blunt 0.2) blended by blunt factor; makes high armour near-immune to cuts
 
 ## modding-tools-editor
 
