@@ -118,6 +118,7 @@ One durable lesson per note. Grep `**/*.md` for a symptom, API or file name; bro
 - [[fbx-reexport-must-preserve-material-names]] (incident): A Blender FBX re-export renamed materials (wood -> wood.001); restore exact material names and slot mapping or the compiled asset changes.
 - [[invisible-mesh-is-scale-not-shader]] (lesson): A mesh that renders in the modding tool but is invisible in game is usually millimetre-scale; measure the compiled tpac bbox (LZ4-compressed geometry) first, and fix via meta_mesh_component scale
 - [[material-without-use-specular-looks-matte]] (lesson): A material whose saved flags omit use_specular samples no specular map, so identical textures still look matte; metallic versus standard workflow also changes reflection.
+- [[mesh-material-from-later-module-warning]] (lesson): Editor "Unable to find material for mesh X.N" = submesh N binds a material from a module that loads later; move the mesh package (.tpac + .rdc) into the material's module, since scenes can place meshes from any module
 - [[reimport-keeps-second-material]] (lesson): Modding Tools FBX reimport rebinds the primary material (slot 1) by FBX name but keeps the stale SecondMaterial (slot 2) GUID; audit slots separately and judge "white mesh" from slot 1
 - [[tpac-material-binding-trailer]] (lesson): A mesh's material binding is a length-prefixed name in the _geo.tpac trailer; "default" means no material was bound and the mesh renders flat grey - fix it in the Modding Tools, never by binary patching
 
