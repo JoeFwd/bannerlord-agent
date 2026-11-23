@@ -43,6 +43,17 @@ dependencies:
         - apm_modules/JoeFwd/bannerlord-agent/.apm/mcp/mcp-http-stdio-bridge.py
         - --url
         - http://localhost:5002
+    - name: bannerlord-search-1_5_7
+      registry: false
+      transport: stdio
+      command: uv
+      args:
+        - run
+        - --isolated
+        - --no-project
+        - apm_modules/JoeFwd/bannerlord-agent/.apm/mcp/mcp-http-stdio-bridge.py
+        - --url
+        - http://localhost:5003
     - name: bannerlord-game-controller
       registry: false
       transport: stdio
